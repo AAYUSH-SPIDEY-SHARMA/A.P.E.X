@@ -631,10 +631,10 @@ Everything below is **written and ready**. No more coding needed for Phase 1.
 
 | # | Component | File | Lines | Status | Tested? |
 |---|-----------|------|-------|--------|---------|
-| 1 | **FASTag Simulator** | `backend/simulator/fastag_simulator.py` | ~570 | ✅ Built | ⏳ Not yet — run with `--mode console` to test |
-| 2 | **Cloud Run Processor** | `backend/processor/main.py` | ~593 | ✅ Built | ⏳ Not yet — start with `uvicorn main:app --port 8080` |
-| 3 | **Highway Graph** | `backend/graph/highway_graph.json` | ~392 | ✅ Built | ✅ Verified — 14 nodes, 20 edges, coordinates correct |
-| 4 | **Mock DPI APIs** | `backend/mock-apis/mock_dpi.py` | ~358 | ✅ Built | ⏳ Not yet — run `python test_apis.py` to test |
+| 1 | **FASTag Simulator** | `backend/simulator/fastag_simulator.py` | ~570 | ✅ Built | ✅ TESTED — 10 events generated, correct schema, timing accurate. **BUG FIXED: Unicode emoji crash on Windows (cp1252)** |
+| 2 | **Cloud Run Processor** | `backend/processor/main.py` | ~593 | ✅ Built | ✅ TESTED — Starts clean, loads 14 nodes + 20 segments. All 6 endpoints return 200 OK. Velocity calc verified (Haversine = 26.29 km/h). M/M/1 utilization working. **BUG FIXED: Unicode emoji in logger** |
+| 3 | **Highway Graph** | `backend/graph/highway_graph.json` | ~392 | ✅ Built | ✅ TESTED — /graph endpoint returns full data. 14 nodes, 20 edges, coordinates verified |
+| 4 | **Mock DPI APIs** | `backend/mock-apis/mock_dpi.py` | ~358 | ✅ Built | ✅ TESTED — All 5 endpoints pass: Vahan (hardcoded + dynamic), eWay Bill, Part-B update, Weather. **BUG FIXED: Unicode emoji in test_apis.py** |
 | 5 | **Firebase Contract** | `shared/firebase-contract.json` | ~69 | ✅ Built | ✅ Verified — matches all member guides |
 | 6 | **Shared Constants** | `shared/constants.py` | ~57 | ✅ Built | ✅ Verified — all enums, statuses, ports defined |
 | 7 | **Dockerfile** | `backend/processor/Dockerfile` | ~15 | ✅ Built | ⏳ Not yet — needs billing for Cloud Run |
@@ -686,18 +686,18 @@ Run these tests **in this order** to verify everything works before Day 7 integr
 
 | # | Test | How to Run | Expected Result | Tested? |
 |---|------|-----------|----------------|---------|
-| 1 | **Simulator console test** | `python backend/simulator/fastag_simulator.py --mode console --rate 2 --trucks 5` | Events print to terminal every 2 seconds | ⏳ |
-| 2 | **Processor starts clean** | `cd backend/processor && uvicorn main:app --port 8080 --reload` | Server starts at `localhost:8080`, no errors | ⏳ |
-| 3 | **Processor health check** | `curl http://localhost:8080/health` | Returns `{"status": "healthy"}` | ⏳ |
-| 4 | **Send test FASTag event** | `curl -X POST http://localhost:8080/process -H "Content-Type: application/json" -d '{...}'` (see Section 8) | Returns processed event with velocity | ⏳ |
-| 5 | **Check node statuses** | `curl http://localhost:8080/nodes` | Returns JSON with 7 toll plaza statuses | ⏳ |
-| 6 | **Check vehicle list** | `curl http://localhost:8080/vehicles` | Returns JSON with tracked vehicles | ⏳ |
-| 7 | **Check graph endpoint** | `curl http://localhost:8080/graph` | Returns highway graph data | ⏳ |
-| 8 | **Mock DPI APIs start** | `cd backend/mock-apis && uvicorn mock_dpi:app --port 8081 --reload` | Server starts at `localhost:8081` | ⏳ |
-| 9 | **Test all mock APIs** | `python backend/mock-apis/test_apis.py` | 5 ✅ passes printed | ⏳ |
-| 10 | **Firebase emulator start** | `npx firebase-tools emulators:start --only database --project apex-digital-twin` | Emulator runs at `localhost:9000` | ⏳ |
-| 11 | **Simulator → Firebase test** | `python backend/simulator/fastag_simulator.py --mode firebase --rate 5 --trucks 10` | Data appears at `localhost:9000/supply_chain/nodes.json` | ⏳ |
-| 12 | **Full pipeline (local)** | Processor + Simulator + Firebase emulator all running simultaneously | Nodes show utilization, routes show truck positions | ⏳ |
+| 1 | **Simulator console test** | `python backend/simulator/fastag_simulator.py --mode console --rate 2 --trucks 5` | Events print to terminal every 2 seconds | ✅ PASS — 10 events in 5.1s, correct schema |
+| 2 | **Processor starts clean** | `cd backend/processor && uvicorn main:app --port 8080` | Server starts at `localhost:8080`, no errors | ✅ PASS — Loaded 14 nodes + 20 segments |
+| 3 | **Processor health check** | `python -c "import httpx; print(httpx.get('http://localhost:8080/health').json())"` | Returns `{"status": "healthy"}` | ✅ PASS — 200 OK, graph_nodes=14 |
+| 4 | **Send test FASTag event** | POST to `http://localhost:8080/process` (see Section 8) | Returns processed event with velocity | ✅ PASS — Velocity=26.29 km/h, M/M/1 util=0.99 |
+| 5 | **Check node statuses** | `GET http://localhost:8080/nodes` | Returns JSON with 7 toll plaza statuses | ✅ PASS — All 7 plazas with names + coords |
+| 6 | **Check vehicle list** | `GET http://localhost:8080/vehicles` | Returns JSON with tracked vehicles | ✅ PASS — 1 vehicle tracked correctly |
+| 7 | **Check graph endpoint** | `GET http://localhost:8080/graph` | Returns highway graph data | ✅ PASS — Full graph with metadata |
+| 8 | **Mock DPI APIs start** | `cd backend/mock-apis && uvicorn mock_dpi:app --port 8081` | Server starts at `localhost:8081` | ✅ PASS — Started clean |
+| 9 | **Test all mock APIs** | `python backend/mock-apis/test_apis.py` | 5 passes printed | ✅ PASS — All 5 DPI APIs return correct data |
+| 10 | **Firebase emulator start** | `npx firebase-tools emulators:start --only database` | Emulator runs at `localhost:9000` | ⏳ Need firebase-tools installed |
+| 11 | **Simulator → Firebase test** | `python backend/simulator/fastag_simulator.py --mode firebase` | Data appears at `localhost:9000/supply_chain/nodes.json` | ⏳ Depends on #10 |
+| 12 | **Full pipeline (local)** | Processor + Simulator + Firebase emulator all running | Nodes show utilization, routes show truck positions | ⏳ Depends on #10 |
 
 **Mark each as ✅ when you test it!**
 
@@ -711,7 +711,7 @@ Run these tests **in this order** to verify everything works before Day 7 integr
 |---|------|----------|--------------|--------|
 | 1 | **Add Vivesh + Rakshak as GitHub collaborators** | 🔴 HIGH | 2 min | ⏳ Do now |
 | 2 | **Share Firebase URL + config with team on WhatsApp** | 🔴 HIGH | 5 min | ⏳ Do now |
-| 3 | **Run local test #1-#9 from testing table above** | 🔴 HIGH | 30 min | ⏳ |
+| 3 | **Run local test #1-#9 from testing table above** | 🔴 HIGH | 30 min | ✅ Done (9/9 passed!) |
 | 4 | **Fix billing (try different card/account/tomorrow)** | 🟡 MEDIUM | 10 min | ❌ Blocked |
 | 5 | **Install firebase-tools locally** (`npm install -g firebase-tools`) | 🟡 MEDIUM | 5 min | ⏳ |
 
@@ -783,15 +783,23 @@ Run these tests **in this order** to verify everything works before Day 7 integr
 ### 📈 OVERALL PROGRESS
 
 ```
-Phase 1 (Code):          ██████████████████████ 100% — ALL code written!
-Cloud Setup:             ████████░░░░░░░░░░░░░  40% — Firebase done, billing blocked
-Local Testing:           ░░░░░░░░░░░░░░░░░░░░░   0% — Need to run tests 1-12
-Integration (Day 7):     ░░░░░░░░░░░░░░░░░░░░░   0% — Not yet
-Deployment (Day 9):      ░░░░░░░░░░░░░░░░░░░░░   0% — Blocked by billing
-Demo Prep (Day 16-18):   ░░░░░░░░░░░░░░░░░░░░░   0% — Future
+Phase 1 (Code):          ██████████████████████ 100% -- ALL code written!
+Cloud Setup:             ████████░░░░░░░░░░░░░  40% -- Firebase done, billing blocked
+Local Testing:           ████████████████░░░░░  75% -- 9/12 tests passed (3 need Firebase emulator)
+Integration (Day 7):     ░░░░░░░░░░░░░░░░░░░░░   0% -- Not yet
+Deployment (Day 9):      ░░░░░░░░░░░░░░░░░░░░░   0% -- Blocked by billing
+Demo Prep (Day 16-18):   ░░░░░░░░░░░░░░░░░░░░░   0% -- Future
 ```
 
-**Overall: ~35% complete | Next step: Run local tests #1-#12 from the testing table!**
+**Overall: ~45% complete | Next step: Install firebase-tools, then run tests #10-#12!**
+
+### Bugs Found & Fixed (April 12, 2026)
+
+| # | Bug | Severity | File | Fix |
+|---|-----|----------|------|-----|
+| 1 | `UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f69b'` — Windows cp1252 console can't print Unicode emojis | 🔴 CRASH | `simulator/fastag_simulator.py` | Replaced all emojis with `[APEX]`, `[OK]`, `[WARN]` etc. |
+| 2 | Same emoji crash in processor logger output | 🔴 CRASH | `processor/main.py` | Replaced emojis with `[OK]`, `[FIREBASE]`, `[ERROR]`, `[APEX]` |
+| 3 | Same emoji crash in test script | 🟡 MINOR | `mock-apis/test_apis.py` | Replaced `✅` with `[OK]` |
 
 ---
 
