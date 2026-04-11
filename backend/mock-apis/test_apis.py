@@ -46,4 +46,4 @@ print(f"  Condition: {d['condition']}")
 print(f"  Severity: {d['severity']}")
 print(f"  Advisory: {d['advisory']}")
 
-print("\n✅ All 5 DPI API tests passed!")
+print("\n[OK] All 5 DPI API tests passed!")

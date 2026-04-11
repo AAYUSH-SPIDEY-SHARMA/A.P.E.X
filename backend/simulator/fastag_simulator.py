@@ -296,7 +296,7 @@ class ConsolePublisher:
         )
 
     async def close(self):
-        print(f"\n✅ Total events published: {self.event_count}")
+        print(f"\n[OK] Total events published: {self.event_count}")
 
 
 class PubSubPublisher:
@@ -306,13 +306,13 @@ class PubSubPublisher:
         try:
             from google.cloud import pubsub_v1
         except ImportError:
-            print("❌ google-cloud-pubsub not installed. Run: pip install google-cloud-pubsub")
+            print("[ERROR] google-cloud-pubsub not installed. Run: pip install google-cloud-pubsub")
             sys.exit(1)
 
         self.publisher = pubsub_v1.PublisherClient()
         self.topic_path = self.publisher.topic_path(project_id, topic_id)
         self.event_count = 0
-        print(f"📡 Publishing to Pub/Sub: {self.topic_path}")
+        print(f"[PUBSUB] Publishing to Pub/Sub: {self.topic_path}")
 
     async def publish(self, event: dict):
         data = json.dumps(event).encode("utf-8")
@@ -329,10 +329,10 @@ class PubSubPublisher:
         )
         self.event_count += 1
         if self.event_count % 50 == 0:
-            print(f"  📡 Published {self.event_count} events...")
+            print(f"  [PUBSUB] Published {self.event_count} events...")
 
     async def close(self):
-        print(f"\n✅ Total events published to Pub/Sub: {self.event_count}")
+        print(f"\n[OK] Total events published to Pub/Sub: {self.event_count}")
 
 
 class FirebasePublisher:
@@ -343,7 +343,7 @@ class FirebasePublisher:
             import firebase_admin
             from firebase_admin import credentials, db
         except ImportError:
-            print("❌ firebase-admin not installed. Run: pip install firebase-admin")
+            print("[ERROR] firebase-admin not installed. Run: pip install firebase-admin")
             sys.exit(1)
 
         # Initialize Firebase (uses GOOGLE_APPLICATION_CREDENTIALS env var)
@@ -358,7 +358,7 @@ class FirebasePublisher:
 
         self.db = db
         self.event_count = 0
-        print(f"🔥 Publishing to Firebase RTDB")
+        print(f"[FIREBASE] Publishing to Firebase RTDB")
 
     async def publish(self, event: dict):
         """Write event as a telemetry log entry."""
@@ -374,7 +374,7 @@ class FirebasePublisher:
         self.db.reference(f"supply_chain/nodes/{node_id}").set(node_data)
 
     async def close(self):
-        print(f"\n✅ Total events written to Firebase: {self.event_count}")
+        print(f"\n[OK] Total events written to Firebase: {self.event_count}")
 
 
 # ---------------------------------------------------------------------------
@@ -400,7 +400,7 @@ async def run_simulation(
     interval = 1.0 / rate if rate > 0 else 1.0
     total_events = rate * duration
 
-    print(f"\n🚛 A.P.E.X FASTag Simulator")
+    print(f"\n[APEX] A.P.E.X FASTag Simulator")
     print(f"   Trucks: {truck_count}")
     print(f"   Toll plazas: {len(TOLL_PLAZAS)}")
     print(f"   Rate: {rate} events/sec")
@@ -410,21 +410,21 @@ async def run_simulation(
 
     # Seed initial node states to Firebase if in firebase mode
     if hasattr(publisher, 'publish_node'):
-        print("🔥 Seeding initial node states to Firebase RTDB...")
+        print("[FIREBASE] Seeding initial node states to Firebase RTDB...")
         for plaza in TOLL_PLAZAS:
             node_data = create_firebase_node_entry(plaza)
             await publisher.publish_node(plaza["tollPlazaId"], node_data)
-        print(f"   ✅ {len(TOLL_PLAZAS)} nodes seeded\n")
+        print(f"   [OK] {len(TOLL_PLAZAS)} nodes seeded\n")
 
         # Seed initial routes
-        print("🔥 Seeding initial active routes to Firebase RTDB...")
+        print("[FIREBASE] Seeding initial active routes to Firebase RTDB...")
         for truck in trucks[:20]:  # Seed first 20 trucks as active routes
             plaza = TOLL_PLAZAS[truck["currentPlazaIndex"]]
             next_idx = truck["currentPlazaIndex"] + truck["direction"]
             next_plaza = TOLL_PLAZAS[next_idx] if 0 <= next_idx < len(TOLL_PLAZAS) else None
             route_data = create_firebase_route_entry(truck, plaza, next_plaza)
             await publisher.publish_route(f"route-{truck['truckId']}", route_data)
-        print(f"   ✅ 20 active routes seeded\n")
+        print(f"   [OK] 20 active routes seeded\n")
 
     event_count = 0
     start_time = asyncio.get_event_loop().time()
@@ -469,10 +469,10 @@ async def run_simulation(
             await asyncio.sleep(interval)
 
     except KeyboardInterrupt:
-        print("\n⚠️  Simulation interrupted by user")
+        print("\n[WARN] Simulation interrupted by user")
 
     await publisher.close()
-    print(f"⏱️  Simulation ran for {elapsed:.1f} seconds")
+    print(f"[TIME] Simulation ran for {elapsed:.1f} seconds")
     return event_count
 
 
@@ -553,7 +553,7 @@ Examples:
     elif args.mode == "firebase":
         publisher = FirebasePublisher(args.firebase_url)
     else:
-        print(f"❌ Unknown mode: {args.mode}")
+        print(f"[ERROR] Unknown mode: {args.mode}")
         sys.exit(1)
 
     # Run simulation

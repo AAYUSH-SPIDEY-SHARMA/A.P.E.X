@@ -132,7 +132,7 @@ def load_highway_graph():
         graph_nodes[node["id"]] = node
 
     logger.info(
-        f"✅ Highway graph loaded: {len(graph_nodes)} nodes, "
+        f"[OK] Highway graph loaded: {len(graph_nodes)} nodes, "
         f"{len(highway_graph.get('links', []))} segments"
     )
 
@@ -150,9 +150,9 @@ def init_firebase():
         if not firebase_admin._apps:
             firebase_admin.initialize_app(None, {"databaseURL": FIREBASE_URL})
         firebase_db = db
-        logger.info(f"🔥 Firebase RTDB connected: {FIREBASE_URL}")
+        logger.info(f"[FIREBASE] Firebase RTDB connected: {FIREBASE_URL}")
     except Exception as e:
-        logger.error(f"❌ Firebase init failed: {e}. Running without Firebase.")
+        logger.error(f"[ERROR] Firebase init failed: {e}. Running without Firebase.")
         firebase_db = None
 
 
@@ -399,7 +399,7 @@ async def startup():
     load_highway_graph()
     if USE_FIREBASE:
         init_firebase()
-    logger.info("🚀 A.P.E.X Processing Service started")
+    logger.info("[APEX] A.P.E.X Processing Service started")
 
 
 @app.get("/health", response_model=HealthResponse)
@@ -491,7 +491,7 @@ async def process_fastag_event(event: FASTagEvent):
     if velocity:
         message += f" | velocity={velocity:.1f} km/h"
     if is_bottleneck:
-        message += " | ⚠️ BOTTLENECK DETECTED"
+        message += " | [!] BOTTLENECK DETECTED"
 
     return ProcessingResult(
         status="processed",
