@@ -1,0 +1,4 @@
+google-cloud-pubsub>=2.18.0
+httpx>=0.25.0
+firebase-admin>=6.2.0
+python-dotenv>=1.0.0

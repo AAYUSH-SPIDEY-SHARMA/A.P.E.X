@@ -1,0 +1,391 @@
+{
+  "_meta": {
+    "description": "Indian Highway Network Graph for A.P.E.X MVP",
+    "source": "Blueprint Section 10.1 (Spanner Graph DDL) — simplified to JSON for MVP",
+    "format": "NetworkX node_link_data compatible — load with networkx.node_link_graph()",
+    "coordinate_system": "[longitude, latitude] — GeoJSON standard"
+  },
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "name": "IndianHighwayGraph_MVP",
+    "description": "Golden Quadrilateral corridor subset — 7 toll plazas + 5 warehouses + 2 ICDs"
+  },
+  "nodes": [
+    {
+      "id": "TP-KHD-001",
+      "type": "TOLL_PLAZA",
+      "name": "Kherki Daula Toll Plaza",
+      "lat": 28.4167,
+      "lng": 77.0500,
+      "highway": "NH-48",
+      "processingRate": 8.5,
+      "avgQueueLength": 35
+    },
+    {
+      "id": "TP-MNR-002",
+      "type": "TOLL_PLAZA",
+      "name": "Manesar Toll Plaza",
+      "lat": 28.3570,
+      "lng": 76.9340,
+      "highway": "NH-48",
+      "processingRate": 10.0,
+      "avgQueueLength": 20
+    },
+    {
+      "id": "TP-JPR-003",
+      "type": "TOLL_PLAZA",
+      "name": "Shahpura Toll Plaza",
+      "lat": 26.9124,
+      "lng": 75.7873,
+      "highway": "NH-48",
+      "processingRate": 7.0,
+      "avgQueueLength": 45
+    },
+    {
+      "id": "TP-PNP-004",
+      "type": "TOLL_PLAZA",
+      "name": "Panipat Toll Plaza",
+      "lat": 29.3909,
+      "lng": 76.9635,
+      "highway": "NH-44",
+      "processingRate": 9.0,
+      "avgQueueLength": 28
+    },
+    {
+      "id": "TP-VDR-005",
+      "type": "TOLL_PLAZA",
+      "name": "Vadodara Toll Plaza",
+      "lat": 22.3072,
+      "lng": 73.1812,
+      "highway": "NH-48",
+      "processingRate": 11.0,
+      "avgQueueLength": 15
+    },
+    {
+      "id": "TP-SRT-006",
+      "type": "TOLL_PLAZA",
+      "name": "Surat Toll Plaza",
+      "lat": 21.1702,
+      "lng": 72.8311,
+      "highway": "NH-48",
+      "processingRate": 8.0,
+      "avgQueueLength": 30
+    },
+    {
+      "id": "TP-MUM-007",
+      "type": "TOLL_PLAZA",
+      "name": "Mumbai Entry Toll Plaza",
+      "lat": 19.2183,
+      "lng": 72.9781,
+      "highway": "NH-48",
+      "processingRate": 6.5,
+      "avgQueueLength": 55
+    },
+    {
+      "id": "WH-DEL-001",
+      "type": "WAREHOUSE",
+      "name": "Delhi NCR Distribution Hub",
+      "lat": 28.5355,
+      "lng": 77.3910,
+      "maxCapacity": 5000,
+      "currentInventory": 3200
+    },
+    {
+      "id": "WH-JPR-002",
+      "type": "WAREHOUSE",
+      "name": "Jaipur RIICO Warehouse",
+      "lat": 26.8498,
+      "lng": 75.8069,
+      "maxCapacity": 3000,
+      "currentInventory": 1800
+    },
+    {
+      "id": "WH-MUM-003",
+      "type": "WAREHOUSE",
+      "name": "Mumbai JNPT Logistics Hub",
+      "lat": 18.9488,
+      "lng": 72.9483,
+      "maxCapacity": 8000,
+      "currentInventory": 5500
+    },
+    {
+      "id": "WH-AHM-004",
+      "type": "WAREHOUSE",
+      "name": "Ahmedabad GIFT City Warehouse",
+      "lat": 23.0225,
+      "lng": 72.5714,
+      "maxCapacity": 4000,
+      "currentInventory": 2100
+    },
+    {
+      "id": "WH-SRT-005",
+      "type": "WAREHOUSE",
+      "name": "Surat Diamond Hub Warehouse",
+      "lat": 21.1702,
+      "lng": 72.8311,
+      "maxCapacity": 2500,
+      "currentInventory": 1600
+    },
+    {
+      "id": "ICD-TKD-001",
+      "type": "ICD",
+      "name": "ICD Tughlakabad",
+      "lat": 28.5090,
+      "lng": 77.2750,
+      "currentDwellTimeHours": 48,
+      "averageReleaseTime": 36
+    },
+    {
+      "id": "ICD-MUN-002",
+      "type": "ICD",
+      "name": "ICD Mundra Port",
+      "lat": 22.8394,
+      "lng": 69.7150,
+      "currentDwellTimeHours": 72,
+      "averageReleaseTime": 55
+    }
+  ],
+  "links": [
+    {
+      "source": "TP-KHD-001",
+      "target": "TP-MNR-002",
+      "segmentId": "SEG-001",
+      "highwayType": "EXPRESSWAY",
+      "highwayNumber": "NH-48",
+      "distanceKm": 14.3,
+      "tollCostINR": 115,
+      "riskScore": 0.15,
+      "accidentSeverityIndex": 22,
+      "freeFlowSpeedKmh": 80
+    },
+    {
+      "source": "TP-MNR-002",
+      "target": "TP-JPR-003",
+      "segmentId": "SEG-002",
+      "highwayType": "NH",
+      "highwayNumber": "NH-48",
+      "distanceKm": 252.0,
+      "tollCostINR": 485,
+      "riskScore": 0.35,
+      "accidentSeverityIndex": 67,
+      "freeFlowSpeedKmh": 65
+    },
+    {
+      "source": "TP-JPR-003",
+      "target": "TP-VDR-005",
+      "segmentId": "SEG-003",
+      "highwayType": "NH",
+      "highwayNumber": "NH-48",
+      "distanceKm": 570.0,
+      "tollCostINR": 920,
+      "riskScore": 0.28,
+      "accidentSeverityIndex": 45,
+      "freeFlowSpeedKmh": 70
+    },
+    {
+      "source": "TP-VDR-005",
+      "target": "TP-SRT-006",
+      "segmentId": "SEG-004",
+      "highwayType": "NH",
+      "highwayNumber": "NH-48",
+      "distanceKm": 160.0,
+      "tollCostINR": 310,
+      "riskScore": 0.22,
+      "accidentSeverityIndex": 38,
+      "freeFlowSpeedKmh": 75
+    },
+    {
+      "source": "TP-SRT-006",
+      "target": "TP-MUM-007",
+      "segmentId": "SEG-005",
+      "highwayType": "EXPRESSWAY",
+      "highwayNumber": "NH-48",
+      "distanceKm": 284.0,
+      "tollCostINR": 545,
+      "riskScore": 0.40,
+      "accidentSeverityIndex": 78,
+      "freeFlowSpeedKmh": 60
+    },
+    {
+      "source": "TP-KHD-001",
+      "target": "TP-PNP-004",
+      "segmentId": "SEG-006",
+      "highwayType": "NH",
+      "highwayNumber": "NH-44",
+      "distanceKm": 110.0,
+      "tollCostINR": 215,
+      "riskScore": 0.30,
+      "accidentSeverityIndex": 55,
+      "freeFlowSpeedKmh": 70
+    },
+    {
+      "source": "WH-DEL-001",
+      "target": "TP-KHD-001",
+      "segmentId": "SEG-007",
+      "highwayType": "NH",
+      "highwayNumber": "NH-48",
+      "distanceKm": 35.0,
+      "tollCostINR": 0,
+      "riskScore": 0.18,
+      "accidentSeverityIndex": 30,
+      "freeFlowSpeedKmh": 40
+    },
+    {
+      "source": "WH-DEL-001",
+      "target": "ICD-TKD-001",
+      "segmentId": "SEG-008",
+      "highwayType": "NH",
+      "highwayNumber": "NH-19",
+      "distanceKm": 18.0,
+      "tollCostINR": 0,
+      "riskScore": 0.12,
+      "accidentSeverityIndex": 15,
+      "freeFlowSpeedKmh": 35
+    },
+    {
+      "source": "WH-JPR-002",
+      "target": "TP-JPR-003",
+      "segmentId": "SEG-009",
+      "highwayType": "SH",
+      "highwayNumber": "SH-12",
+      "distanceKm": 12.0,
+      "tollCostINR": 0,
+      "riskScore": 0.10,
+      "accidentSeverityIndex": 10,
+      "freeFlowSpeedKmh": 45
+    },
+    {
+      "source": "WH-AHM-004",
+      "target": "TP-VDR-005",
+      "segmentId": "SEG-010",
+      "highwayType": "EXPRESSWAY",
+      "highwayNumber": "AE-1",
+      "distanceKm": 105.0,
+      "tollCostINR": 190,
+      "riskScore": 0.08,
+      "accidentSeverityIndex": 12,
+      "freeFlowSpeedKmh": 100
+    },
+    {
+      "source": "WH-SRT-005",
+      "target": "TP-SRT-006",
+      "segmentId": "SEG-011",
+      "highwayType": "SH",
+      "highwayNumber": "SH-6",
+      "distanceKm": 8.0,
+      "tollCostINR": 0,
+      "riskScore": 0.05,
+      "accidentSeverityIndex": 5,
+      "freeFlowSpeedKmh": 40
+    },
+    {
+      "source": "WH-MUM-003",
+      "target": "TP-MUM-007",
+      "segmentId": "SEG-012",
+      "highwayType": "NH",
+      "highwayNumber": "NH-48",
+      "distanceKm": 42.0,
+      "tollCostINR": 80,
+      "riskScore": 0.45,
+      "accidentSeverityIndex": 85,
+      "freeFlowSpeedKmh": 30
+    },
+    {
+      "source": "ICD-MUN-002",
+      "target": "TP-VDR-005",
+      "segmentId": "SEG-013",
+      "highwayType": "NH",
+      "highwayNumber": "NH-8A",
+      "distanceKm": 320.0,
+      "tollCostINR": 580,
+      "riskScore": 0.32,
+      "accidentSeverityIndex": 42,
+      "freeFlowSpeedKmh": 65
+    },
+    {
+      "source": "TP-PNP-004",
+      "target": "WH-DEL-001",
+      "segmentId": "SEG-014",
+      "highwayType": "NH",
+      "highwayNumber": "NH-44",
+      "distanceKm": 95.0,
+      "tollCostINR": 180,
+      "riskScore": 0.25,
+      "accidentSeverityIndex": 40,
+      "freeFlowSpeedKmh": 60
+    },
+    {
+      "source": "TP-JPR-003",
+      "target": "WH-AHM-004",
+      "segmentId": "SEG-015",
+      "highwayType": "NH",
+      "highwayNumber": "NH-48",
+      "distanceKm": 480.0,
+      "tollCostINR": 780,
+      "riskScore": 0.30,
+      "accidentSeverityIndex": 50,
+      "freeFlowSpeedKmh": 65
+    },
+    {
+      "source": "TP-VDR-005",
+      "target": "WH-MUM-003",
+      "segmentId": "SEG-016",
+      "highwayType": "NH",
+      "highwayNumber": "NH-48",
+      "distanceKm": 405.0,
+      "tollCostINR": 750,
+      "riskScore": 0.35,
+      "accidentSeverityIndex": 60,
+      "freeFlowSpeedKmh": 60
+    },
+    {
+      "source": "TP-MNR-002",
+      "target": "TP-PNP-004",
+      "segmentId": "SEG-017",
+      "highwayType": "SH",
+      "highwayNumber": "SH-26",
+      "distanceKm": 125.0,
+      "tollCostINR": 220,
+      "riskScore": 0.42,
+      "accidentSeverityIndex": 72,
+      "freeFlowSpeedKmh": 55
+    },
+    {
+      "source": "TP-SRT-006",
+      "target": "WH-AHM-004",
+      "segmentId": "SEG-018",
+      "highwayType": "NH",
+      "highwayNumber": "NH-48",
+      "distanceKm": 265.0,
+      "tollCostINR": 440,
+      "riskScore": 0.20,
+      "accidentSeverityIndex": 28,
+      "freeFlowSpeedKmh": 70
+    },
+    {
+      "source": "WH-DEL-001",
+      "target": "WH-JPR-002",
+      "segmentId": "SEG-019",
+      "highwayType": "NH",
+      "highwayNumber": "NH-48",
+      "distanceKm": 280.0,
+      "tollCostINR": 520,
+      "riskScore": 0.25,
+      "accidentSeverityIndex": 35,
+      "freeFlowSpeedKmh": 65
+    },
+    {
+      "source": "ICD-TKD-001",
+      "target": "TP-PNP-004",
+      "segmentId": "SEG-020",
+      "highwayType": "NH",
+      "highwayNumber": "NH-44",
+      "distanceKm": 100.0,
+      "tollCostINR": 195,
+      "riskScore": 0.22,
+      "accidentSeverityIndex": 33,
+      "freeFlowSpeedKmh": 55
+    }
+  ]
+}

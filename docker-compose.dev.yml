@@ -1,0 +1,42 @@
+# A.P.E.X — Local Development Environment
+# MVP-only emulators: Pub/Sub + Firebase RTDB
+# Blueprint Section 20.3 (simplified — no Spanner/Redis/Dataflow)
+#
+# Usage: docker-compose -f docker-compose.dev.yml up
+#
+# NOTE: You need Docker Desktop installed.
+# If you don't have Docker, you can skip this and use:
+#   - Console mode for simulator: python fastag_simulator.py --mode console
+#   - Firebase emulator via firebase CLI: firebase emulators:start
+
+version: "3.8"
+
+services:
+  # Google Cloud Pub/Sub Emulator
+  pubsub-emulator:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
+    command: >
+      gcloud beta emulators pubsub start
+      --host-port=0.0.0.0:8085
+      --project=apex-digital-twin
+    ports:
+      - "8085:8085"
+    environment:
+      - PUBSUB_PROJECT_ID=apex-digital-twin
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Firebase Emulator Suite (RTDB only)
+  # NOTE: Alternatively, run `firebase emulators:start --only database`
+  # locally if you have firebase-tools installed.
+  # firebase-emulator:
+  #   image: andreysenov/firebase-tools
+  #   command: firebase emulators:start --only database --project apex-digital-twin
+  #   ports:
+  #     - "9000:9000"   # RTDB
+  #     - "4000:4000"   # Emulator UI
+  #   volumes:
+  #     - ./firebase.json:/home/node/firebase.json

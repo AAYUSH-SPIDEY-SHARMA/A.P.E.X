@@ -1,0 +1,45 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# GCP credentials (NEVER commit these)
+service-account-key*.json
+*-credentials.json
+*-service-account.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node modules (frontend)
+node_modules/
+dist/
+build/
+
+# Python
+*.egg-info/
+*.egg
+pip-log.txt
+
+# Logs
+*.log
+
+# Docker
+docker-compose.override.yml
