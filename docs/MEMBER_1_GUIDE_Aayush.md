@@ -23,6 +23,7 @@
 11. [Day 10-12: Pipeline Polish](#11-day-10-12-pipeline-polish)
 12. [Day 13-18: Testing & Demo Prep](#12-day-13-18-testing--demo-prep)
 13. [FAQ — Common Confusions Answered](#13-faq)
+14. [📊 Progress Tracker](#14-progress-tracker)
 
 ---
 
@@ -616,22 +617,182 @@ Use `firebase` mode in the simulator instead of `pubsub` mode. The simulator can
 
 ---
 
-## CURRENT STATUS
+## 14. 📊 PROGRESS TRACKER
 
-| Task | Status | File |
-|------|--------|------|
-| GCP Setup Script | ✅ Done | `scripts/gcp-setup.ps1` |
-| Firebase Contract | ✅ Done | `shared/firebase-contract.json` |
-| FASTag Simulator | ✅ Done | `backend/simulator/fastag_simulator.py` |
-| Highway Graph | ✅ Done | `backend/graph/highway_graph.json` |
-| Cloud Run Processor | ✅ Done | `backend/processor/main.py` |
-| Mock DPI APIs | ✅ Done | `backend/mock-apis/mock_dpi.py` |
-| GCP Deployment | ⏳ Day 7-9 | Deploy to Cloud Run |
-| Integration Testing | ⏳ Day 7-9 | Test with Members 2 & 3 |
-| Demo Data Seeding | ⏳ Day 16 | `scripts/seed_demo_data.py` |
-
-**Your next action: Day 7 — run the full pipeline locally and verify Member 3 can see your data on their dashboard.**
+> **Last updated: April 12, 2026**
+>
+> Use this section to track everything you've done, what's tested, what's blocked, and what's remaining.
 
 ---
 
-> **REMEMBER: The backend that RUNS RELIABLY is more valuable than a complex backend that crashes during the demo. Your code is already built — now focus on making it deployment-ready and rock-solid.**
+### ✅ PHASE 1: CODE — What's Built (Days 1-6)
+
+Everything below is **written and ready**. No more coding needed for Phase 1.
+
+| # | Component | File | Lines | Status | Tested? |
+|---|-----------|------|-------|--------|---------|
+| 1 | **FASTag Simulator** | `backend/simulator/fastag_simulator.py` | ~570 | ✅ Built | ⏳ Not yet — run with `--mode console` to test |
+| 2 | **Cloud Run Processor** | `backend/processor/main.py` | ~593 | ✅ Built | ⏳ Not yet — start with `uvicorn main:app --port 8080` |
+| 3 | **Highway Graph** | `backend/graph/highway_graph.json` | ~392 | ✅ Built | ✅ Verified — 14 nodes, 20 edges, coordinates correct |
+| 4 | **Mock DPI APIs** | `backend/mock-apis/mock_dpi.py` | ~358 | ✅ Built | ⏳ Not yet — run `python test_apis.py` to test |
+| 5 | **Firebase Contract** | `shared/firebase-contract.json` | ~69 | ✅ Built | ✅ Verified — matches all member guides |
+| 6 | **Shared Constants** | `shared/constants.py` | ~57 | ✅ Built | ✅ Verified — all enums, statuses, ports defined |
+| 7 | **Dockerfile** | `backend/processor/Dockerfile` | ~15 | ✅ Built | ⏳ Not yet — needs billing for Cloud Run |
+| 8 | **GCP Setup Script** | `scripts/gcp-setup.ps1` | ~100 | ✅ Built | ⚠️ Partial (see cloud setup below) |
+| 9 | **Docker Compose** | `docker-compose.dev.yml` | ~35 | ✅ Built | ⏳ Not yet — needs Docker Desktop running |
+| 10 | **Firebase Config** | `firebase.json` + `database.rules.json` | ~21 | ✅ Built | ✅ Working |
+
+---
+
+### ☁️ CLOUD / MANUAL SETUP — What's Done Online
+
+| # | Setup Task | Where | Status | Notes |
+|---|------------|-------|--------|-------|
+| 1 | **GCP Project** | Cloud Console | ✅ Done | Project: `vigilant-cider-439218-b7` |
+| 2 | **Enable Pub/Sub API** | Cloud Console | ✅ Done | `pubsub.googleapis.com` enabled |
+| 3 | **Enable Firebase API** | Cloud Console | ✅ Done | `firebasedatabase.googleapis.com` enabled |
+| 4 | **Enable Maps API** | Cloud Console | ✅ Done | `maps-backend.googleapis.com` enabled |
+| 5 | **Enable Cloud Run API** | Cloud Console | ❌ **BLOCKED** | Needs billing account — bank blocked autopay (error `OR_BACR2_44`) |
+| 6 | **GCP Billing Account** | Cloud Console | ❌ **BLOCKED** | Try again tomorrow or use different account/card |
+| 7 | **Firebase RTDB** | Firebase Console | ✅ Done | URL: `https://apex-digital-twin-493017-default-rtdb.asia-southeast1.firebasedatabase.app` |
+| 8 | **Firebase Web App** | Firebase Console | ✅ Done | Config object generated — shared with Member 3 |
+| 9 | **Google Maps API Key** | Cloud Console | ❌ **BLOCKED** | Needs billing account |
+| 10 | **Google Maps dark Map ID** | Cloud Console | ❌ **BLOCKED** | Needs billing account |
+| 11 | **GCP Service Account Keys** | Cloud Console | ❌ **BLOCKED** | Needs billing account |
+| 12 | **GitHub Repo** | GitHub | ✅ Done | `https://github.com/AAYUSH-SPIDEY-SHARMA/A.P.E.X.git` — 27 files pushed |
+| 13 | **GitHub Collaborators** | GitHub Settings | ⏳ Pending | Add Vivesh + Rakshak's GitHub usernames |
+
+---
+
+### 📤 SHARING WITH TEAM — What's Shared
+
+| # | What to Share | Who Needs It | Status | How |
+|---|--------------|-------------|--------|-----|
+| 1 | **GitHub repo URL** | Both | ✅ Shared | They clone: `git clone https://github.com/AAYUSH-SPIDEY-SHARMA/A.P.E.X.git` |
+| 2 | **Firebase RTDB URL** | Both | ✅ Ready to share | `https://apex-digital-twin-493017-default-rtdb.asia-southeast1.firebasedatabase.app` |
+| 3 | **Firebase config object** | Member 3 | ✅ Ready to share | apiKey, authDomain, databaseURL, projectId (see Section 6) |
+| 4 | **Google Maps API Key** | Member 3 | ❌ Blocked (billing) | Share once billing resolved |
+| 5 | **Google Maps dark Map ID** | Member 3 | ❌ Blocked (billing) | Share once billing resolved |
+| 6 | **GCP service account keys** | Both | ❌ Blocked (billing) | Share `.json` key files via WhatsApp (NOT Git!) |
+| 7 | **highway_graph.json** | Member 2 | ✅ In repo | Already pushed — `backend/graph/highway_graph.json` |
+| 8 | **firebase-contract.json** | Both | ✅ In repo | Already pushed — `shared/firebase-contract.json` |
+| 9 | **constants.py** | Both | ✅ In repo | Already pushed — `shared/constants.py` |
+
+---
+
+### 🧪 LOCAL TESTING — What to Test Next
+
+Run these tests **in this order** to verify everything works before Day 7 integration:
+
+| # | Test | How to Run | Expected Result | Tested? |
+|---|------|-----------|----------------|---------|
+| 1 | **Simulator console test** | `python backend/simulator/fastag_simulator.py --mode console --rate 2 --trucks 5` | Events print to terminal every 2 seconds | ⏳ |
+| 2 | **Processor starts clean** | `cd backend/processor && uvicorn main:app --port 8080 --reload` | Server starts at `localhost:8080`, no errors | ⏳ |
+| 3 | **Processor health check** | `curl http://localhost:8080/health` | Returns `{"status": "healthy"}` | ⏳ |
+| 4 | **Send test FASTag event** | `curl -X POST http://localhost:8080/process -H "Content-Type: application/json" -d '{...}'` (see Section 8) | Returns processed event with velocity | ⏳ |
+| 5 | **Check node statuses** | `curl http://localhost:8080/nodes` | Returns JSON with 7 toll plaza statuses | ⏳ |
+| 6 | **Check vehicle list** | `curl http://localhost:8080/vehicles` | Returns JSON with tracked vehicles | ⏳ |
+| 7 | **Check graph endpoint** | `curl http://localhost:8080/graph` | Returns highway graph data | ⏳ |
+| 8 | **Mock DPI APIs start** | `cd backend/mock-apis && uvicorn mock_dpi:app --port 8081 --reload` | Server starts at `localhost:8081` | ⏳ |
+| 9 | **Test all mock APIs** | `python backend/mock-apis/test_apis.py` | 5 ✅ passes printed | ⏳ |
+| 10 | **Firebase emulator start** | `npx firebase-tools emulators:start --only database --project apex-digital-twin` | Emulator runs at `localhost:9000` | ⏳ |
+| 11 | **Simulator → Firebase test** | `python backend/simulator/fastag_simulator.py --mode firebase --rate 5 --trucks 10` | Data appears at `localhost:9000/supply_chain/nodes.json` | ⏳ |
+| 12 | **Full pipeline (local)** | Processor + Simulator + Firebase emulator all running simultaneously | Nodes show utilization, routes show truck positions | ⏳ |
+
+**Mark each as ✅ when you test it!**
+
+---
+
+### 📅 DAY-WISE REMAINING WORK
+
+#### ▶ IMMEDIATE (Today/Tomorrow — before Day 7)
+
+| # | Task | Priority | Time Estimate | Status |
+|---|------|----------|--------------|--------|
+| 1 | **Add Vivesh + Rakshak as GitHub collaborators** | 🔴 HIGH | 2 min | ⏳ Do now |
+| 2 | **Share Firebase URL + config with team on WhatsApp** | 🔴 HIGH | 5 min | ⏳ Do now |
+| 3 | **Run local test #1-#9 from testing table above** | 🔴 HIGH | 30 min | ⏳ |
+| 4 | **Fix billing (try different card/account/tomorrow)** | 🟡 MEDIUM | 10 min | ❌ Blocked |
+| 5 | **Install firebase-tools locally** (`npm install -g firebase-tools`) | 🟡 MEDIUM | 5 min | ⏳ |
+
+#### ▶ DAY 7 — First Integration (THE BIG DAY)
+
+| # | Task | Priority | Time Estimate | Status |
+|---|------|----------|--------------|--------|
+| 1 | Start Firebase emulator + Processor + Simulator together | 🔴 HIGH | 15 min | ⏳ |
+| 2 | Verify `supply_chain/nodes` has data in Firebase | 🔴 HIGH | 5 min | ⏳ |
+| 3 | Verify `supply_chain/active_routes` has data in Firebase | 🔴 HIGH | 5 min | ⏳ |
+| 4 | Tell Member 3 to connect their dashboard → verify dots appear | 🔴 HIGH | 30 min | ⏳ |
+| 5 | Tell Member 2 to read Firebase node data → verify model input works | 🟡 MEDIUM | 20 min | ⏳ |
+| 6 | Fix any bugs that appear during integration | 🔴 HIGH | 1-2 hrs | ⏳ |
+
+#### ▶ DAY 8 — Pub/Sub Action Topic
+
+| # | Task | Priority | Time Estimate | Status |
+|---|------|----------|--------------|--------|
+| 1 | Create `action-topic` in Pub/Sub | 🟡 MEDIUM | 5 min | ⏳ |
+| 2 | Add code to processor: when ρ > 0.85, publish to action-topic | 🟡 MEDIUM | 30 min | ⏳ |
+| 3 | Test: send high-traffic events → verify action message published | 🟡 MEDIUM | 15 min | ⏳ |
+
+#### ▶ DAY 9 — Cloud Run Deployment (NEEDS BILLING)
+
+| # | Task | Priority | Time Estimate | Status |
+|---|------|----------|--------------|--------|
+| 1 | Fix billing (MUST be resolved by now) | 🔴 HIGH | — | ❌ Blocked |
+| 2 | Enable Cloud Run API | 🔴 HIGH | 2 min | ⏳ |
+| 3 | `gcloud builds submit --tag gcr.io/PROJECT/processor .` | 🔴 HIGH | 5 min | ⏳ |
+| 4 | `gcloud run deploy apex-processor ...` | 🔴 HIGH | 5 min | ⏳ |
+| 5 | Share Cloud Run URL with Member 3 | 🔴 HIGH | 1 min | ⏳ |
+| 6 | Create & share Google Maps API Key + Map ID with Member 3 | 🔴 HIGH | 10 min | ⏳ |
+| 7 | Create & share GCP service account keys with both members | 🟡 MEDIUM | 10 min | ⏳ |
+
+> **⚠️ FALLBACK if billing never works:** Skip Cloud Run. Run processor on your laptop during demo. Demo looks exactly the same to judges. Use `localhost:8080` instead of Cloud Run URL.
+
+#### ▶ DAY 10-12 — Pipeline Polish
+
+| # | Task | Priority | Time Estimate | Status |
+|---|------|----------|--------------|--------|
+| 1 | Fix all integration bugs from Day 7-9 | 🔴 HIGH | 2-3 hrs | ⏳ |
+| 2 | Update Firebase URL in processor from emulator to production | 🟡 MEDIUM | 5 min | ⏳ |
+| 3 | Pre-seed Firebase with demo data (`scripts/seed_demo_data.py`) | 🟡 MEDIUM | 15 min | ⏳ |
+| 4 | Test full pipeline 3x end-to-end to ensure stability | 🔴 HIGH | 1 hr | ⏳ |
+
+#### ▶ DAY 13-15 — Testing Sprint
+
+| # | Task | Priority | Time Estimate | Status |
+|---|------|----------|--------------|--------|
+| 1 | Full pipeline test with Member 2 + 3 simultaneously | 🔴 HIGH | 2 hrs | ⏳ |
+| 2 | Test Dual-Shock scenario (Monsoon + ICEGATE failure) | 🔴 HIGH | 1 hr | ⏳ |
+| 3 | Optimize pipeline latency to < 5 seconds end-to-end | 🟡 MEDIUM | 1 hr | ⏳ |
+| 4 | Fix all bugs from testing | 🔴 HIGH | 2-3 hrs | ⏳ |
+
+#### ▶ DAY 16-18 — Demo Prep
+
+| # | Task | Priority | Time Estimate | Status |
+|---|------|----------|--------------|--------|
+| 1 | Pre-seed 50 trucks on Golden Quadrilateral route | 🔴 HIGH | 15 min | ⏳ |
+| 2 | Create "Reset Demo" command (curl DELETE + re-seed) | 🔴 HIGH | 10 min | ⏳ |
+| 3 | Demo rehearsal #1 — run full 5-minute script | 🔴 HIGH | 30 min | ⏳ |
+| 4 | Demo rehearsal #2 + #3 — refine timing | 🔴 HIGH | 1 hr | ⏳ |
+| 5 | Record backup demo video | 🟡 MEDIUM | 30 min | ⏳ |
+| 6 | Final rehearsal #4 | 🔴 HIGH | 30 min | ⏳ |
+| 7 | Deploy to production GCP (if billing works) | 🟡 MEDIUM | 30 min | ⏳ |
+
+---
+
+### 📈 OVERALL PROGRESS
+
+```
+Phase 1 (Code):          ██████████████████████ 100% — ALL code written!
+Cloud Setup:             ████████░░░░░░░░░░░░░  40% — Firebase done, billing blocked
+Local Testing:           ░░░░░░░░░░░░░░░░░░░░░   0% — Need to run tests 1-12
+Integration (Day 7):     ░░░░░░░░░░░░░░░░░░░░░   0% — Not yet
+Deployment (Day 9):      ░░░░░░░░░░░░░░░░░░░░░   0% — Blocked by billing
+Demo Prep (Day 16-18):   ░░░░░░░░░░░░░░░░░░░░░   0% — Future
+```
+
+**Overall: ~35% complete | Next step: Run local tests #1-#12 from the testing table!**
+
+---
+
+> **REMEMBER: The backend that RUNS RELIABLY is more valuable than a complex backend that crashes during the demo. Your code is already built — now focus on TESTING and making it rock-solid.**
