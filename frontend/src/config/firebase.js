@@ -1,20 +1,18 @@
-import { initializeApp } from 'firebase/app';
-import { getDatabase } from 'firebase/database';
+// Firebase configuration
+// Replace with real values once Member 1 sets up the GCP project
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "demo-key",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "apex-digital-twin.firebaseapp.com",
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://apex-digital-twin-rtdb.firebaseio.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "apex-digital-twin",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "apex-digital-twin.appspot.com",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "000000000000",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:000000000000:web:0000000000000000000000"
 };
 
-const app = initializeApp(firebaseConfig);
-export const db = getDatabase(app);
-
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+
 export const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 
 // Map defaults — center on Nagpur (geographic center of India)
@@ -62,3 +60,5 @@ export const MAP_COLORS = {
   nodeDelayed: [245, 158, 11, 220],    // Amber
   nodeDisrupted: [239, 68, 68, 220],   // Red
 };
+
+export default firebaseConfig;

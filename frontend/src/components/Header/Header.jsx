@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Header.css';
 
-export default function Header({ activeRoutes = 0, activeNodes = 0, onToggleTheme, theme }) {
+export default function Header({ activeRoutes = 0, activeNodes = 0 }) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -54,14 +54,6 @@ export default function Header({ activeRoutes = 0, activeNodes = 0, onToggleThem
         <div className="header__clock">
           {formatTime(time)} IST &middot; {formatDate(time)}
         </div>
-        <button 
-          className="btn btn-ghost btn-sm" 
-          onClick={onToggleTheme}
-          style={{ width: '36px', height: '36px', padding: 0, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: '8px' }}
-          title="Toggle Theme"
-        >
-          {theme === 'dark' ? '☀️' : '🌙'}
-        </button>
       </div>
     </header>
   );
