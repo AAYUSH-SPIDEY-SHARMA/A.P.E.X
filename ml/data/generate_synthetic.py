@@ -9,16 +9,16 @@ OUTPUT_DIR = "./"
 TIMESTEPS = 15000  # 15,000 steps * 7 nodes = 105,000 rows
 STEP_MINUTES = 15
 
-# SYNCED WITH AAYUSH'S BACKEND GRAPH
+# SYNCED WITH AAYUSH'S BACKEND GRAPH — ACTUAL GPS COORDINATES
 # Order matters for cascading congestion: [0] is Origin (Delhi), [6] is Destination (Mumbai)
 NODES = [
-    {"id": "NH48_KHERKI_DAULA", "processingRate": 12.0},
-    {"id": "NH48_SHAHJAHANPUR", "processingRate": 8.0},  # RTO bottleneck
-    {"id": "NH48_THIKARIYA",    "processingRate": 15.0},
-    {"id": "NH48_VASAD",        "processingRate": 11.0}, # 7th Node (Gujarat)
-    {"id": "NH48_KARJAN",       "processingRate": 12.0},
-    {"id": "NH48_DAHISAR",      "processingRate": 10.0},
-    {"id": "NH48_JNPT_PORT",    "processingRate": 5.0}   # Port bottleneck
+    {"id": "NH48_KHERKI_DAULA", "type": "TOLL_PLAZA", "name": "Kherki Daula Toll Plaza",  "lat": 28.395604, "lng": 76.981760, "processingRate": 12.0, "avgQueueLength": 35},
+    {"id": "NH48_SHAHJAHANPUR",  "type": "RTO",        "name": "Shahjahanpur RTO",         "lat": 27.999780, "lng": 76.430522, "processingRate":  8.0, "avgQueueLength": 45},  # RTO bottleneck
+    {"id": "NH48_THIKARIYA",     "type": "TOLL_PLAZA", "name": "Thikariya Toll Plaza",     "lat": 26.843328, "lng": 75.615578, "processingRate": 15.0, "avgQueueLength": 20},
+    {"id": "NH48_VASAD",         "type": "TOLL_PLAZA", "name": "Vasad Toll Plaza",         "lat": 22.453260, "lng": 73.070492, "processingRate": 11.0, "avgQueueLength": 25},
+    {"id": "NH48_KARJAN",        "type": "TOLL_PLAZA", "name": "Karjan Toll Plaza",        "lat": 22.014778, "lng": 73.115375, "processingRate": 12.0, "avgQueueLength": 20},
+    {"id": "NH48_DAHISAR",       "type": "TOLL_PLAZA", "name": "Dahisar Toll Plaza",       "lat": 19.260565, "lng": 72.872801, "processingRate": 10.0, "avgQueueLength": 40},
+    {"id": "NH48_JNPT_PORT",     "type": "ICD",        "name": "JNPT Port",                "lat": 18.934750, "lng": 72.943125, "processingRate":  5.0, "avgQueueLength": 60},  # Port bottleneck
 ]
 
 def generate_time_series_data():

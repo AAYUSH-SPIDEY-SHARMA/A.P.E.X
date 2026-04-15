@@ -1,0 +1,30 @@
+# ==========================================================================
+# A.P.E.X ML Agent — Deployment Dependencies
+# ==========================================================================
+# These are the runtime dependencies for the Cloud Run FastAPI service.
+# Install with: pip install -r requirements.txt
+#
+# NOTE: This is separate from ml/requirements.txt (which covers training).
+#       The deployment requirements are leaner — no matplotlib, no training
+#       utilities, just inference + serving.
+# ==========================================================================
+
+# --- Web Framework ---
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+
+# --- ML Inference ---
+xgboost>=2.0.0
+scikit-learn>=1.2.0
+joblib>=1.3.0
+numpy>=1.24.0
+pandas>=2.0.0
+
+# --- Routing ---
+networkx>=3.2
+
+# --- HTTP Client (Firebase REST API) ---
+httpx>=0.25.0
+
+# --- Validation ---
+pydantic>=2.0.0

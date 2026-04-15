@@ -3,44 +3,45 @@
     "description": "Indian Highway Network Graph for A.P.E.X MVP",
     "source": "Blueprint Section 10.1 (Spanner Graph DDL) — simplified to JSON for MVP",
     "format": "NetworkX node_link_data compatible — load with networkx.node_link_graph()",
-    "coordinate_system": "[longitude, latitude] — GeoJSON standard"
+    "coordinate_system": "[longitude, latitude] — GeoJSON standard",
+    "node_id_convention": "NH48_* for corridor nodes (synced with ml/data/generate_synthetic.py)"
   },
   "directed": false,
   "multigraph": false,
   "graph": {
     "name": "IndianHighwayGraph_MVP",
-    "description": "Golden Quadrilateral corridor subset — 7 toll plazas + 5 warehouses + 2 ICDs"
+    "description": "NH-48 Delhi-Mumbai corridor — 7 corridor nodes + 5 warehouses + 2 ICDs + 1 alternate toll"
   },
   "nodes": [
     {
-      "id": "TP-KHD-001",
+      "id": "NH48_KHERKI_DAULA",
       "type": "TOLL_PLAZA",
       "name": "Kherki Daula Toll Plaza",
-      "lat": 28.4167,
-      "lng": 77.0500,
+      "lat": 28.395604,
+      "lng": 76.981760,
       "highway": "NH-48",
-      "processingRate": 8.5,
+      "processingRate": 12.0,
       "avgQueueLength": 35
     },
     {
-      "id": "TP-MNR-002",
-      "type": "TOLL_PLAZA",
-      "name": "Manesar Toll Plaza",
-      "lat": 28.3570,
-      "lng": 76.9340,
+      "id": "NH48_SHAHJAHANPUR",
+      "type": "RTO",
+      "name": "Shahjahanpur RTO",
+      "lat": 27.999780,
+      "lng": 76.430522,
       "highway": "NH-48",
-      "processingRate": 10.0,
-      "avgQueueLength": 20
+      "processingRate": 8.0,
+      "avgQueueLength": 45
     },
     {
-      "id": "TP-JPR-003",
+      "id": "NH48_THIKARIYA",
       "type": "TOLL_PLAZA",
-      "name": "Shahpura Toll Plaza",
-      "lat": 26.9124,
-      "lng": 75.7873,
+      "name": "Thikariya Toll Plaza",
+      "lat": 26.843328,
+      "lng": 75.615578,
       "highway": "NH-48",
-      "processingRate": 7.0,
-      "avgQueueLength": 45
+      "processingRate": 15.0,
+      "avgQueueLength": 20
     },
     {
       "id": "TP-PNP-004",
@@ -53,34 +54,44 @@
       "avgQueueLength": 28
     },
     {
-      "id": "TP-VDR-005",
+      "id": "NH48_VASAD",
       "type": "TOLL_PLAZA",
-      "name": "Vadodara Toll Plaza",
-      "lat": 22.3072,
-      "lng": 73.1812,
+      "name": "Vasad Toll Plaza",
+      "lat": 22.453260,
+      "lng": 73.070492,
       "highway": "NH-48",
       "processingRate": 11.0,
-      "avgQueueLength": 15
+      "avgQueueLength": 25
     },
     {
-      "id": "TP-SRT-006",
+      "id": "NH48_KARJAN",
       "type": "TOLL_PLAZA",
-      "name": "Surat Toll Plaza",
-      "lat": 21.1702,
-      "lng": 72.8311,
+      "name": "Karjan Toll Plaza",
+      "lat": 22.014778,
+      "lng": 73.115375,
       "highway": "NH-48",
-      "processingRate": 8.0,
-      "avgQueueLength": 30
+      "processingRate": 12.0,
+      "avgQueueLength": 20
     },
     {
-      "id": "TP-MUM-007",
+      "id": "NH48_DAHISAR",
       "type": "TOLL_PLAZA",
-      "name": "Mumbai Entry Toll Plaza",
-      "lat": 19.2183,
-      "lng": 72.9781,
+      "name": "Dahisar Toll Plaza",
+      "lat": 19.260565,
+      "lng": 72.872801,
       "highway": "NH-48",
-      "processingRate": 6.5,
-      "avgQueueLength": 55
+      "processingRate": 10.0,
+      "avgQueueLength": 40
+    },
+    {
+      "id": "NH48_JNPT_PORT",
+      "type": "ICD",
+      "name": "JNPT Port",
+      "lat": 18.934750,
+      "lng": 72.943125,
+      "highway": "NH-48",
+      "processingRate": 5.0,
+      "avgQueueLength": 60
     },
     {
       "id": "WH-DEL-001",
@@ -148,67 +159,79 @@
   ],
   "links": [
     {
-      "source": "TP-KHD-001",
-      "target": "TP-MNR-002",
+      "source": "NH48_KHERKI_DAULA",
+      "target": "NH48_SHAHJAHANPUR",
       "segmentId": "SEG-001",
       "highwayType": "EXPRESSWAY",
       "highwayNumber": "NH-48",
-      "distanceKm": 14.3,
+      "distanceKm": 65.0,
       "tollCostINR": 115,
       "riskScore": 0.15,
       "accidentSeverityIndex": 22,
       "freeFlowSpeedKmh": 80
     },
     {
-      "source": "TP-MNR-002",
-      "target": "TP-JPR-003",
+      "source": "NH48_SHAHJAHANPUR",
+      "target": "NH48_THIKARIYA",
       "segmentId": "SEG-002",
       "highwayType": "NH",
       "highwayNumber": "NH-48",
-      "distanceKm": 252.0,
+      "distanceKm": 152.0,
       "tollCostINR": 485,
       "riskScore": 0.35,
       "accidentSeverityIndex": 67,
       "freeFlowSpeedKmh": 65
     },
     {
-      "source": "TP-JPR-003",
-      "target": "TP-VDR-005",
+      "source": "NH48_THIKARIYA",
+      "target": "NH48_VASAD",
       "segmentId": "SEG-003",
       "highwayType": "NH",
       "highwayNumber": "NH-48",
-      "distanceKm": 570.0,
+      "distanceKm": 540.0,
       "tollCostINR": 920,
       "riskScore": 0.28,
       "accidentSeverityIndex": 45,
       "freeFlowSpeedKmh": 70
     },
     {
-      "source": "TP-VDR-005",
-      "target": "TP-SRT-006",
+      "source": "NH48_VASAD",
+      "target": "NH48_KARJAN",
       "segmentId": "SEG-004",
       "highwayType": "NH",
       "highwayNumber": "NH-48",
-      "distanceKm": 160.0,
-      "tollCostINR": 310,
-      "riskScore": 0.22,
-      "accidentSeverityIndex": 38,
+      "distanceKm": 49.0,
+      "tollCostINR": 110,
+      "riskScore": 0.12,
+      "accidentSeverityIndex": 18,
       "freeFlowSpeedKmh": 75
     },
     {
-      "source": "TP-SRT-006",
-      "target": "TP-MUM-007",
+      "source": "NH48_KARJAN",
+      "target": "NH48_DAHISAR",
       "segmentId": "SEG-005",
       "highwayType": "EXPRESSWAY",
       "highwayNumber": "NH-48",
-      "distanceKm": 284.0,
+      "distanceKm": 310.0,
       "tollCostINR": 545,
       "riskScore": 0.40,
       "accidentSeverityIndex": 78,
       "freeFlowSpeedKmh": 60
     },
     {
-      "source": "TP-KHD-001",
+      "source": "NH48_DAHISAR",
+      "target": "NH48_JNPT_PORT",
+      "segmentId": "SEG-005B",
+      "highwayType": "NH",
+      "highwayNumber": "NH-48",
+      "distanceKm": 38.0,
+      "tollCostINR": 80,
+      "riskScore": 0.35,
+      "accidentSeverityIndex": 65,
+      "freeFlowSpeedKmh": 35
+    },
+    {
+      "source": "NH48_KHERKI_DAULA",
       "target": "TP-PNP-004",
       "segmentId": "SEG-006",
       "highwayType": "NH",
@@ -221,11 +244,11 @@
     },
     {
       "source": "WH-DEL-001",
-      "target": "TP-KHD-001",
+      "target": "NH48_KHERKI_DAULA",
       "segmentId": "SEG-007",
       "highwayType": "NH",
       "highwayNumber": "NH-48",
-      "distanceKm": 35.0,
+      "distanceKm": 50.0,
       "tollCostINR": 0,
       "riskScore": 0.18,
       "accidentSeverityIndex": 30,
@@ -245,11 +268,11 @@
     },
     {
       "source": "WH-JPR-002",
-      "target": "TP-JPR-003",
+      "target": "NH48_THIKARIYA",
       "segmentId": "SEG-009",
       "highwayType": "SH",
       "highwayNumber": "SH-12",
-      "distanceKm": 12.0,
+      "distanceKm": 22.0,
       "tollCostINR": 0,
       "riskScore": 0.10,
       "accidentSeverityIndex": 10,
@@ -257,7 +280,7 @@
     },
     {
       "source": "WH-AHM-004",
-      "target": "TP-VDR-005",
+      "target": "NH48_VASAD",
       "segmentId": "SEG-010",
       "highwayType": "EXPRESSWAY",
       "highwayNumber": "AE-1",
@@ -269,11 +292,11 @@
     },
     {
       "source": "WH-SRT-005",
-      "target": "TP-SRT-006",
+      "target": "NH48_KARJAN",
       "segmentId": "SEG-011",
       "highwayType": "SH",
       "highwayNumber": "SH-6",
-      "distanceKm": 8.0,
+      "distanceKm": 20.0,
       "tollCostINR": 0,
       "riskScore": 0.05,
       "accidentSeverityIndex": 5,
@@ -281,19 +304,19 @@
     },
     {
       "source": "WH-MUM-003",
-      "target": "TP-MUM-007",
+      "target": "NH48_JNPT_PORT",
       "segmentId": "SEG-012",
       "highwayType": "NH",
       "highwayNumber": "NH-48",
-      "distanceKm": 42.0,
-      "tollCostINR": 80,
-      "riskScore": 0.45,
-      "accidentSeverityIndex": 85,
+      "distanceKm": 5.0,
+      "tollCostINR": 0,
+      "riskScore": 0.10,
+      "accidentSeverityIndex": 15,
       "freeFlowSpeedKmh": 30
     },
     {
       "source": "ICD-MUN-002",
-      "target": "TP-VDR-005",
+      "target": "NH48_VASAD",
       "segmentId": "SEG-013",
       "highwayType": "NH",
       "highwayNumber": "NH-8A",
@@ -316,7 +339,7 @@
       "freeFlowSpeedKmh": 60
     },
     {
-      "source": "TP-JPR-003",
+      "source": "NH48_THIKARIYA",
       "target": "WH-AHM-004",
       "segmentId": "SEG-015",
       "highwayType": "NH",
@@ -328,7 +351,7 @@
       "freeFlowSpeedKmh": 65
     },
     {
-      "source": "TP-VDR-005",
+      "source": "NH48_VASAD",
       "target": "WH-MUM-003",
       "segmentId": "SEG-016",
       "highwayType": "NH",
@@ -340,7 +363,7 @@
       "freeFlowSpeedKmh": 60
     },
     {
-      "source": "TP-MNR-002",
+      "source": "NH48_SHAHJAHANPUR",
       "target": "TP-PNP-004",
       "segmentId": "SEG-017",
       "highwayType": "SH",
@@ -352,12 +375,12 @@
       "freeFlowSpeedKmh": 55
     },
     {
-      "source": "TP-SRT-006",
+      "source": "NH48_KARJAN",
       "target": "WH-AHM-004",
       "segmentId": "SEG-018",
       "highwayType": "NH",
       "highwayNumber": "NH-48",
-      "distanceKm": 265.0,
+      "distanceKm": 200.0,
       "tollCostINR": 440,
       "riskScore": 0.20,
       "accidentSeverityIndex": 28,
