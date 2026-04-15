@@ -1,0 +1,132 @@
+/* KPIDashboard.css */
+
+.kpi-bar {
+  height: var(--kpi-bar-height);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-bg-card-solid);
+  border-top: 1px solid var(--color-border);
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.03);
+}
+
+.kpi-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.kpi-card__icon {
+  font-size: var(--text-lg);
+  margin-bottom: 2px;
+}
+
+.kpi-card__value {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  animation: countUp var(--transition-slow) forwards;
+}
+
+.kpi-card__label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.kpi-card__trend {
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.kpi-card__trend--up {
+  color: var(--color-success);
+}
+
+.kpi-card__trend--down {
+  color: var(--color-danger);
+}
+
+/* Accent bars at bottom of KPI cards */
+.kpi-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.kpi-card--eta::after {
+  background: linear-gradient(90deg, #2563EB, #7C3AED);
+}
+
+.kpi-card--cost::after {
+  background: linear-gradient(90deg, #10B981, #059669);
+}
+
+.kpi-card--trucks::after {
+  background: linear-gradient(90deg, #F59E0B, #D97706);
+}
+
+.kpi-card--health::after {
+  background: linear-gradient(90deg, #6366F1, #4F46E5);
+}
+
+/* Mini utilization ring */
+.kpi-ring {
+  width: 44px;
+  height: 44px;
+  position: relative;
+}
+
+.kpi-ring svg {
+  transform: rotate(-90deg);
+}
+
+.kpi-ring__bg {
+  fill: none;
+  stroke: var(--color-bg-secondary);
+  stroke-width: 4;
+}
+
+.kpi-ring__fill {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease, stroke var(--transition-base);
+}
+
+.kpi-ring__value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+}

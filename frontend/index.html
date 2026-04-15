@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A.P.E.X — Automated Predictive Expressway Routing. An autonomous self-healing supply chain digital twin for India's highway freight network." />
+    <title>A.P.E.X Command Center — Autonomous Supply Chain Intelligence</title>
+  </head>
+  <body>
+    <div id="root">
+      <style>
+        .apex-preloader {
+          position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+          background: #F8FAFC; display: flex; flex-direction: column;
+          align-items: center; justify-content: center; z-index: 9999;
+          font-family: system-ui, -apple-system, sans-serif;
+        }
+        .apex-spinner {
+          width: 48px; height: 48px; border: 4px solid #E2E8F0;
+          border-top-color: #2563EB; border-radius: 50%;
+          animation: apex-spin 1s linear infinite; margin-bottom: 24px;
+        }
+        @keyframes apex-spin { 100% { transform: rotate(360deg); } }
+        .apex-text { color: #475569; font-weight: 600; letter-spacing: 1px; font-size: 14px; text-transform: uppercase; }
+        .apex-sub { color: #94A3B8; font-size: 11px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+      </style>
+      <div class="apex-preloader">
+        <div class="apex-spinner"></div>
+        <div class="apex-text">Initializing A.P.E.X Engine</div>
+        <div class="apex-sub">Bootstrapping Digital Twin...</div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
