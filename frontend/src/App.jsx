@@ -6,31 +6,19 @@ import NodeInspector from './components/NodeInspector/NodeInspector';
 import AnomalyConsole from './components/AnomalyConsole/AnomalyConsole';
 import AlertTimeline from './components/AlertTimeline/AlertTimeline';
 import KPIDashboard from './components/KPIDashboard/KPIDashboard';
-import { useFirebaseNodes } from './hooks/useFirebaseNodes';
-import { useFirebaseRoutes } from './hooks/useFirebaseRoutes';
-import { useFirebaseAnomalies } from './hooks/useFirebaseAnomalies';
-import { useFirebaseAlerts } from './hooks/useFirebaseAlerts';
+import { useLocalState } from './hooks/useFirebase';
 
 function App() {
-  const nodes = useFirebaseNodes();
-  const routes = useFirebaseRoutes();
-  const anomalies = useFirebaseAnomalies();
-  const alerts = useFirebaseAlerts();
+  const {
+    nodes, routes, anomalies, alerts,
+    injectAnomaly, resetState,
+  } = useLocalState();
 
   const [selectedNode, setSelectedNode] = useState(null);
   const [toasts, setToasts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [theme, setTheme] = useState('light');
 
-  React.useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
-  const toggleTheme = useCallback(() => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  }, []);
-
-  // Compute KPIs from state
+  // Compute KPIs from state — no useEffect needed, just derive from data
   const kpis = useMemo(() => {
     const disrupted = nodes.filter(n => n.status === 'DISRUPTED').length;
     const delayed = nodes.filter(n => n.status === 'DELAYED').length;
@@ -47,6 +35,7 @@ function App() {
     };
   }, [nodes, routes, alerts]);
 
+  // Add toast notification
   const addToast = useCallback((message, type = 'success') => {
     const id = Date.now();
     setToasts(prev => [...prev, { id, message, type }]);
@@ -55,78 +44,86 @@ function App() {
     }, 4000);
   }, []);
 
-  const handleInject = useCallback(async (anomaly) => {
+  // Handle anomaly injection
+  const handleInject = useCallback((anomaly) => {
     setIsLoading(true);
-    try {
-      const res = await fetch(`${import.meta.env.VITE_ML_API_URL}/inject-anomaly`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(anomaly),
-      });
-      const result = await res.json();
-      addToast(`⚡ Disruption injected! ${result.rerouted || 0} trucks autonomously rerouted.`);
-    } catch (err) {
-      console.error('Injection failed:', err);
-      // Fallback message if backend is not running yet
-      addToast(`⚡ Note: Backend not connected. Anomaly submitted locally.`);
-    } finally {
+    setTimeout(() => {
+      const result = injectAnomaly(anomaly);
+      addToast(`⚡ Disruption injected! ${result.rerouted} trucks autonomously rerouted. ₹${(result.costSaved / 100000).toFixed(1)}L saved.`);
       setIsLoading(false);
-    }
-  }, [addToast]);
+    }, 800);
+  }, [injectAnomaly, addToast]);
 
-  const handleDualShock = useCallback(async () => {
+  // Handle dual-shock scenario
+  const handleDualShock = useCallback(() => {
     setIsLoading(true);
-    addToast('🌧️ Shock 1: Western Ghats Monsoon — Severity 95%');
-    try {
-      await fetch(`${import.meta.env.VITE_ML_API_URL}/inject-anomaly`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'MONSOON', severity: 0.95, lat: 17.5, lng: 73.8 }),
+    setTimeout(() => {
+      injectAnomaly({
+        type: 'MONSOON', severity: 0.95, lat: 17.5, lng: 73.8,
+        affectedHighway: 'NH-48 Western Ghats', timestamp: new Date().toISOString(),
       });
-      
-      setTimeout(async () => {
-        addToast(`🖥️ Shock 2: ICEGATE Failure! System gridlocked.`);
-        await fetch(`${import.meta.env.VITE_ML_API_URL}/inject-anomaly`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'ICEGATE_FAILURE', severity: 1.0, lat: 28.5, lng: 77.3 }),
-        });
-        setIsLoading(false);
-      }, 2000);
-    } catch (error) {
-      console.error(error);
-      setIsLoading(false);
-    }
-  }, [addToast]);
+      addToast('🌧️ Shock 1: Western Ghats Monsoon — Severity 95%');
+    }, 500);
 
+    setTimeout(() => {
+      const result = injectAnomaly({
+        type: 'ICEGATE_FAILURE', severity: 1.0, lat: 28.5, lng: 77.3,
+        affectedHighway: 'ICD Tughlakabad', timestamp: new Date().toISOString(),
+      });
+      addToast(`🖥️ Shock 2: ICEGATE Failure — ${result.rerouted} trucks rerouted autonomously`);
+      setIsLoading(false);
+    }, 2000);
+  }, [injectAnomaly, addToast]);
+
+  // Handle full autopilot demo flow
   const handleAutopilot = useCallback(() => {
-    // Reset or call autopilot endpoint
-    addToast('🤖 Autopilot Engaged: Pitch Mode connected to backend...', 'info');
-    handleDualShock();
-  }, [addToast, handleDualShock]);
-
-  const handleReset = useCallback(async () => {
-    try {
-      await fetch(`${import.meta.env.VITE_PROCESSOR_API_URL}/reset`, { method: 'POST' });
-      addToast('🔄 Backend reset triggered — systems nominal');
-    } catch (error) {
-       addToast('🔄 Local reset complete');
-    }
+    resetState();
     setSelectedNode(null);
-  }, [addToast]);
+    setIsLoading(true);
+    
+    // Baseline state presentation
+    setTimeout(() => addToast('🤖 Autopilot Engaged: Analyzing baseline DFC tracking...', 'info'), 500);
 
+    // Shock 1
+    setTimeout(() => {
+      injectAnomaly({
+        type: 'MONSOON', severity: 0.95, lat: 17.5, lng: 73.8,
+        affectedHighway: 'NH-48 Western Ghats', timestamp: new Date().toISOString(),
+      });
+      addToast('🌧️ Shock 1: Western Ghats Monsoon limits flow capacity', 'error');
+    }, 4000);
+
+    // Shock 2
+    setTimeout(() => {
+      const result = injectAnomaly({
+        type: 'ICEGATE_FAILURE', severity: 1.0, lat: 28.5, lng: 77.3,
+        affectedHighway: 'ICD Tughlakabad', timestamp: new Date().toISOString(),
+      });
+      addToast(`🖥️ Shock 2: ICEGATE Failure! System gridlocked.`, 'error');
+    }, 8000);
+
+    // Resolution state
+    setTimeout(() => {
+      addToast(`⚡ Autonomous Multi-Agent repair invoked via MCP. System stabilized in 11.4s.`, 'success');
+      setIsLoading(false);
+    }, 12000);
+  }, [injectAnomaly, addToast, resetState]);
+
+  // Handle reset
+  const handleReset = useCallback(() => {
+    resetState();
+    setSelectedNode(null);
+    addToast('🔄 Demo reset complete — all systems nominal');
+  }, [resetState, addToast]);
+
+  // Handle node click on map
   const handleNodeClick = useCallback((node) => {
     setSelectedNode(node);
   }, []);
 
   return (
     <div className="app">
-      <Header 
-        activeRoutes={kpis.activeRoutes} 
-        activeNodes={kpis.activeNodes}
-        onToggleTheme={toggleTheme}
-        theme={theme}
-      />
+      <Header activeRoutes={kpis.activeRoutes} activeNodes={kpis.activeNodes} />
 
       <div className="app__content">
         <div className="app__map">

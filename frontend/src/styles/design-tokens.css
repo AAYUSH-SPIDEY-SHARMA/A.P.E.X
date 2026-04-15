@@ -160,24 +160,3 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
-
-[data-theme="dark"] {
-  --color-bg-primary: #0A0E17;
-  --color-bg-secondary: #111827;
-  --color-bg-card: rgba(17, 24, 39, 0.85);
-  --color-bg-card-solid: #111827;
-  --color-bg-hover: rgba(59, 130, 246, 0.15);
-
-  --color-text-primary: #F8FAFC;
-  --color-text-secondary: #94A3B8;
-  --color-text-tertiary: #64748B;
-  --color-text-inverse: #0A0E17;
-
-  --color-border: rgba(59, 130, 246, 0.3);
-  --color-border-strong: #334155;
-  --color-divider: rgba(255, 255, 255, 0.05);
-
-  --glass-bg: rgba(17, 24, 39, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.05);
-  --glass-blur: blur(20px);
-}
