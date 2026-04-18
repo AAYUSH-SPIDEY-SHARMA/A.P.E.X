@@ -18,7 +18,12 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "httpx"])
     import httpx
 
-FIREBASE_URL = "https://project-96d2fc7b-e1a1-418a-87a-default-rtdb.asia-southeast1.firebasedatabase.app"
+FIREBASE_URL = os.environ.get("FIREBASE_DATABASE_URL", "")
+if not FIREBASE_URL:
+    print("[ERROR] Set FIREBASE_DATABASE_URL environment variable first!")
+    print("  PowerShell: $env:FIREBASE_DATABASE_URL = 'https://your-project.firebasedatabase.app'")
+    sys.exit(1)
+
 
 # ── Load real nodes from highway graph ──────────────────────────────
 GRAPH_PATH = os.path.join(os.path.dirname(__file__), "..", "backend", "graph", "highway_graph.json")

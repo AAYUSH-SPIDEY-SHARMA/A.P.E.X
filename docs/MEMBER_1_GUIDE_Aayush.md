@@ -648,7 +648,7 @@ Everything below is **written, fixed, and deployed**.
 
 | # | Setup Task | Where | Status | Details |
 |---|------------|-------|--------|---------|
-| 1 | **GCP Project** | Cloud Console | ✅ Done | `project-96d2fc7b-e1a1-418a-87a` |
+| 1 | **GCP Project** | Cloud Console | ✅ Done | *(set in env vars)* |
 | 2 | **GCP Billing** | Cloud Console | ✅ **DONE** | Free trial — ₹28,444 credits, expires July 18, 2026 |
 | 3 | **gcloud CLI** | Local | ✅ **DONE** | Google Cloud SDK 565.0.0 installed |
 | 4 | **Firebase CLI** | Local | ✅ **DONE** | v15.15.0 installed |
@@ -658,12 +658,12 @@ Everything below is **written, fixed, and deployed**.
 | 8 | **Enable Cloud Build API** | Cloud Console | ✅ **DONE** | For Docker image builds |
 | 9 | **Enable Artifact Registry** | Cloud Console | ✅ **DONE** | `apex-docker` repo in `asia-south1` |
 | 10 | **Pub/Sub Topics** | Cloud Console | ✅ **DONE** | `fastag-telemetry-stream` + `action-topic` |
-| 11 | **Service Account** | Cloud Console | ✅ **DONE** | `apex-backend@project-96d2fc7b-e1a1-418a-87a.iam.gserviceaccount.com` |
+| 11 | **Service Account** | Cloud Console | ✅ **DONE** | `apex-backend@<PROJECT_ID>.iam.gserviceaccount.com` |
 | 12 | **IAM Roles** | Cloud Console | ✅ **DONE** | pubsub.sub/pub, firebasedatabase.admin, run.invoker, storage.admin |
-| 13 | **Firebase RTDB** | Firebase Console | ✅ **DONE** | `https://project-96d2fc7b-e1a1-418a-87a-default-rtdb.asia-southeast1.firebasedatabase.app` |
+| 13 | **Firebase RTDB** | Firebase Console | ✅ **DONE** | *(URL in FIREBASE_DATABASE_URL env var)* |
 | 14 | **Database Rules** | Firebase Console | ✅ **DONE** | Open rules deployed for demo |
-| 15 | **Firebase Web App** | Firebase Console | ✅ **DONE** | `APEX Dashboard` — App ID: `1:246320615957:web:0827c31b3fafaea441b41c` |
-| 16 | **ML Agent on Cloud Run** | Cloud Run | ✅ **DONE** | **LIVE: `https://apex-ml-agent-246320615957.asia-south1.run.app`** |
+| 15 | **Firebase Web App** | Firebase Console | ✅ **DONE** | `APEX Dashboard` registered |
+| 16 | **ML Agent on Cloud Run** | Cloud Run | ✅ **DONE** | *(URL in ML_AGENT_URL env var)* |
 | 17 | **Artifact Registry** | Cloud Console | ✅ **DONE** | Docker image pushed to `apex-docker` registry |
 | 18 | **GitHub Repo** | GitHub | ✅ Done | Code pushed with all fixes |
 
@@ -687,8 +687,8 @@ Everything below is **written, fixed, and deployed**.
 | 1 | **GitHub repo URL** | Both | ✅ Shared |
 | 2 | **Firebase RTDB URL** | Both | ✅ **DONE — Updated in code** |
 | 3 | **Firebase config object** | Member 3 | ✅ **DONE — Updated in `firebase.js` + `.env`** |
-| 4 | **ML Agent Cloud Run URL** | Both | ✅ **DONE — `https://apex-ml-agent-246320615957.asia-south1.run.app`** |
-| 5 | **Swagger API Docs** | Both | ✅ **DONE — `https://apex-ml-agent-246320615957.asia-south1.run.app/docs`** |
+| 4 | **ML Agent Cloud Run URL** | Both | ✅ **DONE — see env var** |
+| 5 | **Swagger API Docs** | Both | ✅ **DONE — /docs on ML Agent URL** |
 | 6 | **highway_graph.json** | Member 2 | ✅ In repo |
 | 7 | **firebase-contract.json** | Both | ✅ In repo |
 | 8 | **constants.py** | Both | ✅ In repo — updated with real URLs |
@@ -761,14 +761,10 @@ Demo Prep:               ████████░░░░░░░░░░�
 
 ### 🔑 LIVE CREDENTIALS (Quick Reference)
 
-```
-GCP Project:     project-96d2fc7b-e1a1-418a-87a
-GCP Account:     iiitl.msa24005@gmail.com
-ML Agent:        https://apex-ml-agent-246320615957.asia-south1.run.app
-Swagger Docs:    https://apex-ml-agent-246320615957.asia-south1.run.app/docs
-Firebase RTDB:   https://project-96d2fc7b-e1a1-418a-87a-default-rtdb.asia-southeast1.firebasedatabase.app
-Firebase Console: https://console.firebase.google.com/project/project-96d2fc7b-e1a1-418a-87a/database
-```
+> **Do NOT put credentials in source code or docs committed to Git.**
+> All credentials are stored in environment variables and `.env` files (gitignored).
+> See `frontend/.env.example` for the template.
+> Get real values from Aayush via WhatsApp/DM.
 
 ---
 

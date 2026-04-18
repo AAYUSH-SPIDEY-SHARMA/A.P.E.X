@@ -54,4 +54,6 @@ PORT_ML_AGENT = 8082           # Member 2 — ML routing agent
 PORT_FRONTEND = 5173           # Member 3 — React dev server
 
 # --- Firebase RTDB URL ---
-FIREBASE_DATABASE_URL = "https://project-96d2fc7b-e1a1-418a-87a-default-rtdb.asia-southeast1.firebasedatabase.app"
+# Set via environment variable (never hardcode in source)
+import os
+FIREBASE_DATABASE_URL = os.environ.get("FIREBASE_DATABASE_URL", "")

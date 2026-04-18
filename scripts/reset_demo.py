@@ -9,7 +9,12 @@ import subprocess
 import sys
 import os
 
-FIREBASE_URL = "https://project-96d2fc7b-e1a1-418a-87a-default-rtdb.asia-southeast1.firebasedatabase.app"
+FIREBASE_URL = os.environ.get("FIREBASE_DATABASE_URL", "")
+if not FIREBASE_URL:
+    print("[ERROR] Set FIREBASE_DATABASE_URL environment variable first!")
+    sys.exit(1)
+
+ML_AGENT_URL = os.environ.get("ML_AGENT_URL", "")
 
 print("[APEX] ===== DEMO RESET =====")
 print("[APEX] Step 1: Clearing all supply_chain data...")
@@ -29,5 +34,7 @@ subprocess.check_call([sys.executable, seed_script])
 
 print("\n[APEX] ===== DEMO READY =====")
 print(f"[APEX] Firebase: {FIREBASE_URL}")
-print("[APEX] ML Agent: https://apex-ml-agent-246320615957.asia-south1.run.app")
+if ML_AGENT_URL:
+    print(f"[APEX] ML Agent: {ML_AGENT_URL}")
 print("[APEX] Run 'npm run dev' in frontend/ to start dashboard")
+
