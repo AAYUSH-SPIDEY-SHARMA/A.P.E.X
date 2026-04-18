@@ -110,6 +110,69 @@
   --kpi-bar-height: 130px;
 }
 
+/* ══════════════════════════════════════════════════════════════
+   Dark Theme Override
+   ══════════════════════════════════════════════════════════════ */
+[data-theme="dark"] {
+  /* ── Colors: Core Palette ── */
+  --color-bg-primary: #0B0F19;
+  --color-bg-secondary: #111827;
+  --color-bg-card: rgba(30, 41, 59, 0.82);
+  --color-bg-card-solid: #1E293B;
+  --color-bg-hover: rgba(96, 165, 250, 0.08);
+
+  /* ── Colors: Accent & Brand ── */
+  --color-primary: #60A5FA;
+  --color-primary-light: #93C5FD;
+  --color-primary-dark: #3B82F6;
+  --color-primary-ghost: rgba(96, 165, 250, 0.12);
+
+  /* ── Colors: Semantic ── */
+  --color-success: #34D399;
+  --color-success-light: rgba(16, 185, 129, 0.15);
+  --color-success-ghost: rgba(16, 185, 129, 0.08);
+  --color-warning: #FBBF24;
+  --color-warning-light: rgba(245, 158, 11, 0.15);
+  --color-warning-ghost: rgba(245, 158, 11, 0.08);
+  --color-danger: #F87171;
+  --color-danger-light: rgba(239, 68, 68, 0.15);
+  --color-danger-ghost: rgba(239, 68, 68, 0.08);
+  --color-info: #818CF8;
+  --color-info-light: rgba(99, 102, 241, 0.15);
+  --color-info-ghost: rgba(99, 102, 241, 0.08);
+
+  /* ── Colors: Text ── */
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  --color-text-tertiary: #64748B;
+  --color-text-inverse: #0F172A;
+
+  /* ── Colors: Borders & Dividers ── */
+  --color-border: rgba(51, 65, 85, 0.6);
+  --color-border-strong: #475569;
+  --color-divider: rgba(255, 255, 255, 0.06);
+
+  /* ── Shadows ── */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.4);
+  --shadow-glow-primary: 0 0 20px rgba(96, 165, 250, 0.25);
+  --shadow-glow-danger: 0 0 20px rgba(248, 113, 113, 0.25);
+  --shadow-glow-success: 0 0 20px rgba(52, 211, 153, 0.25);
+
+  /* ── Glassmorphism ── */
+  --glass-bg: rgba(15, 23, 42, 0.75);
+  --glass-border: rgba(148, 163, 184, 0.15);
+  --glass-blur: blur(16px);
+}
+
+/* Smooth theme transition */
+*, *::before, *::after {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
 /* ── Animations ── */
 @keyframes fadeIn {
   from { opacity: 0; }
