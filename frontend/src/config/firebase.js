@@ -1,14 +1,15 @@
 // Firebase configuration
-// Replace with real values once Member 1 sets up the GCP project
+// Values are loaded from frontend/.env (gitignored — never commit secrets)
+// See frontend/.env.example for the required variables
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyBlrzzFgr2tBR0tL_5D1lHyBV5G7g44QkM",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "project-96d2fc7b-e1a1-418a-87a.firebaseapp.com",
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://project-96d2fc7b-e1a1-418a-87a-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "project-96d2fc7b-e1a1-418a-87a",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "project-96d2fc7b-e1a1-418a-87a.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "246320615957",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:246320615957:web:0827c31b3fafaea441b41c"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "",
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || ""
 };
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8082";
