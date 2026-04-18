@@ -2,16 +2,16 @@
 // Replace with real values once Member 1 sets up the GCP project
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "demo-key",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "apex-digital-twin.firebaseapp.com",
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://apex-digital-twin-rtdb.firebaseio.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "apex-digital-twin",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "apex-digital-twin.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "000000000000",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:000000000000:web:0000000000000000000000"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyCbHhyqfrw3ioAs0V04FKYnCHCQqkfO1NI",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "project-96d2fc7b-e1a1-418a-87a.firebaseapp.com",
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://project-96d2fc7b-e1a1-418a-87a-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "project-96d2fc7b-e1a1-418a-87a",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "project-96d2fc7b-e1a1-418a-87a.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "246320615957",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:246320615957:web:0827c31b3fafaea441b41c"
 };
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8082";
 
 export const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 

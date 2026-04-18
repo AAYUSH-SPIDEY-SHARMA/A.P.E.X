@@ -8,7 +8,7 @@ venv/
 .venv/
 env/
 
-# Environment variables
+# Environment variables (contain real API keys)
 .env
 .env.local
 .env.*.local
@@ -43,3 +43,26 @@ pip-log.txt
 
 # Docker
 docker-compose.override.yml
+
+# ML model binaries (too large for Git — regenerate via training scripts)
+ml/models/*.pkl
+
+# Temporary deploy directory
+deploy_ml_agent/
+
+# Old personal project files
+vivesh_ml_output/
+*.gguf
+*.bin
+check_gpu.py
+run_phase2_merge_quantize.py
+run_phase2b_convert.py
+jhrebfhjedb.md
+
+# Internal reports and guides (NOT part of codebase)
+MEMBER_1_ACTION_REPORT_AAYUSH.md
+MEMBER_2_ACTION_REPORT_VIVESH.md
+MEMBER_3_ACTION_REPORT_RAKSHAK.md
+GCP_DEPLOYMENT_GUIDE.md
+guide_audit.md
+A.P.E.X.md

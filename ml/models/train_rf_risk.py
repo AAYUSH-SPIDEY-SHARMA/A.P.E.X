@@ -5,9 +5,10 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import joblib
 import os
 
-# --- CONFIGURATION (EXPLICIT WINDOWS PATHS) ---
-DATA_DIR = r"C:\Users\vives\OneDrive\Desktop\hackothone\google solution hackathon\A.P.E.X\ml\data"
-MODEL_DIR = r"C:\Users\vives\OneDrive\Desktop\hackothone\google solution hackathon\A.P.E.X\ml\models"
+# --- CONFIGURATION (PORTABLE RELATIVE PATHS) ---
+# Resolved relative to this file — works on any machine, Docker, and Cloud Run
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data")
+MODEL_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def train_risk_regressor():
     print("🚀 Initializing A.P.E.X Random Forest Regressor Pipeline...")

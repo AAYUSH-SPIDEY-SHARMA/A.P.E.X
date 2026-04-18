@@ -1,5 +1,6 @@
 # A.P.E.X Processing Service — Cloud Run Container
-# Blueprint: deploy via `gcloud run deploy apex-processor --source .`
+# Build from PROJECT ROOT: docker build -f backend/processor/Dockerfile .
+# Or for Cloud Run: gcloud run deploy apex-processor --source backend/processor
 #
 # For local dev, just use: uvicorn main:app --reload --port 8080
 
@@ -13,9 +14,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY main.py .
-
-# Copy highway graph (needed for node lookups)
-COPY ../graph/highway_graph.json /app/backend/graph/highway_graph.json
 
 # Cloud Run uses PORT env var
 ENV PORT=8080

@@ -7,10 +7,10 @@ import joblib
 import os
 import matplotlib.pyplot as plt
 
-# --- CONFIGURATION (EXPLICIT WINDOWS PATHS) ---
-# Using raw strings (r"") to prevent Windows backslashes from breaking the code
-DATA_DIR = r"C:\Users\vives\OneDrive\Desktop\hackothone\google solution hackathon\A.P.E.X\ml\data"
-MODEL_DIR = r"C:\Users\vives\OneDrive\Desktop\hackothone\google solution hackathon\A.P.E.X\ml\models"
+# --- CONFIGURATION (PORTABLE RELATIVE PATHS) ---
+# Resolved relative to this file — works on any machine, Docker, and Cloud Run
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data")
+MODEL_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def train_apex_model():
     print("🚀 Initializing A.P.E.X XGBoost Training & Tuning Pipeline...")

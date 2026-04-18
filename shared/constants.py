@@ -54,4 +54,4 @@ PORT_ML_AGENT = 8082           # Member 2 — ML routing agent
 PORT_FRONTEND = 5173           # Member 3 — React dev server
 
 # --- Firebase RTDB URL ---
-FIREBASE_DATABASE_URL = "https://apex-digital-twin-493017-default-rtdb.asia-southeast1.firebasedatabase.app"
+FIREBASE_DATABASE_URL = "https://project-96d2fc7b-e1a1-418a-87a-default-rtdb.asia-southeast1.firebasedatabase.app"
