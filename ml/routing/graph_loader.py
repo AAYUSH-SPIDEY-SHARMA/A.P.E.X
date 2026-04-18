@@ -205,9 +205,8 @@ def load_highway_graph(
     # Strip _meta key (not part of NetworkX schema) before parsing
     graph_data = {k: v for k, v in raw_data.items() if k != "_meta"}
 
-    # edges="links" matches the highway_graph.json key name and suppresses
-    # the NetworkX 3.6 FutureWarning about the default changing to "edges"
-    graph = nx.node_link_graph(graph_data, edges="links")
+    # NetworkX 3.3: use link="links" (the default) to match highway_graph.json key name
+    graph = nx.node_link_graph(graph_data, directed=False, multigraph=False)
 
     _validate_graph(graph)
 
