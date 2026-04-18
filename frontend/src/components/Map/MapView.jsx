@@ -7,7 +7,8 @@ import { ScatterplotLayer, TextLayer, ArcLayer } from '@deck.gl/layers';
 import { MAP_COLORS, MAP_CONFIG } from '../../config/firebase';
 import './MapView.css';
 
-const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
+const MAP_STYLE_LIGHT = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
+const MAP_STYLE_DARK = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 
 const INITIAL_VIEW_STATE = {
   longitude: MAP_CONFIG.center.lng,
@@ -17,7 +18,9 @@ const INITIAL_VIEW_STATE = {
   bearing: 0
 };
 
-export default function MapView({ nodes = [], routes = [], anomalies = [], onNodeClick }) {
+export default function MapView({ nodes = [], routes = [], anomalies = [], onNodeClick, theme = 'light' }) {
+  const isDark = theme === 'dark';
+  const mapStyle = isDark ? MAP_STYLE_DARK : MAP_STYLE_LIGHT;
   
   const getNodeColor = (status) => {
     switch (status) {
@@ -118,14 +121,14 @@ export default function MapView({ nodes = [], routes = [], anomalies = [], onNod
       getPosition: d => [d.lng, d.lat],
       getText: d => d.name,
       getSize: 12,
-      getColor: d => [71, 85, 105, 255],
+      getColor: isDark ? [200, 215, 235, 255] : [71, 85, 105, 255],
       getAngle: 0,
       getTextAnchor: 'middle',
       getAlignmentBaseline: 'top',
       getPixelOffset: [0, 15],
       background: true,
       backgroundPadding: [4, 2],
-      getBackgroundColor: [255, 255, 255, 230],
+      getBackgroundColor: isDark ? [15, 23, 42, 200] : [255, 255, 255, 230],
       fontFamily: 'Inter, sans-serif',
       fontWeight: 600,
     });
@@ -149,10 +152,10 @@ export default function MapView({ nodes = [], routes = [], anomalies = [], onNod
     });
 
     return [routeLayer, truckLayer, nodeLayer, anomalyLayer, labelLayer, anomalyLabelLayer];
-  }, [nodes, routes, anomalies, onNodeClick]);
+  }, [nodes, routes, anomalies, onNodeClick, isDark]);
 
   return (
-    <div className="map-container relative w-full h-full">
+    <div className="map-container" style={{ position: 'relative', width: '100%', height: '100%' }}>
       <DeckGL
         initialViewState={INITIAL_VIEW_STATE}
         controller={true}
@@ -161,21 +164,27 @@ export default function MapView({ nodes = [], routes = [], anomalies = [], onNod
           if (!info.object) return null;
           const { layer, object: d } = info;
           if (layer.id === 'nodes-layer') {
+            const tooltipStyle = isDark
+              ? { backgroundColor: '#0F172A', color: '#E2E8F0', fontSize: '13px', padding: '10px', borderRadius: '6px', border: '1px solid #334155', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }
+              : { backgroundColor: '#fff', color: '#1E293B', fontSize: '13px', padding: '10px', borderRadius: '6px', border: '1px solid #CBD5E1', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' };
             return {
               html: `<b>${d.name}</b><br/>Type: ${d.type?.replace(/_/g, ' ')}<br/>Status: ${d.status}<br/>Queue: ${d.queueLength} trucks`,
-              style: { backgroundColor: '#fff', color: '#1E293B', fontSize: '13px', padding: '10px', borderRadius: '6px', border: '1px solid #CBD5E1', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }
+              style: tooltipStyle
             };
           }
           if (layer.id === 'routes-layer') {
+            const tooltipStyle = isDark
+              ? { backgroundColor: '#0F172A', color: '#E2E8F0', fontSize: '13px', padding: '10px', borderRadius: '6px', border: '1px solid #334155', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }
+              : { backgroundColor: '#fff', color: '#1E293B', fontSize: '13px', padding: '10px', borderRadius: '6px', border: '1px solid #CBD5E1', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' };
             return {
-              html: `<b>Vehicle: ${d.vehicleRegNo}</b><br/>Status: ${d.isRerouted ? 'REROUTED' : d.status}<br/>Risk: ${(d.riskScore * 100).toFixed(0)}%<br/>Origin: ${d.origin}<br/>Dest: ${d.destination}`,
-              style: { backgroundColor: '#fff', color: '#1E293B', fontSize: '13px', padding: '10px', borderRadius: '6px', border: '1px solid #CBD5E1', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }
+              html: `<b>Vehicle: ${d.vehicleRegNo}</b><br/>Status: ${d.isRerouted ? 'REROUTED' : d.status}<br/>Risk: ${(d.riskScore * 100).toFixed(0)}%<br/>Cargo: ₹${(d.cargoValueINR/100000).toFixed(1)}L`,
+              style: tooltipStyle
             };
           }
           if (layer.id === 'anomaly-layer') {
             return {
               html: `<b>${d.type?.replace(/_/g, ' ')}</b><br/>Severity: ${(d.severity * 100).toFixed(0)}%<br/>Impact: ${d.affectedHighway}`,
-              style: { backgroundColor: '#FEF2F2', color: '#991B1B', fontSize: '13px', padding: '10px', borderRadius: '6px', border: '1px solid #FECACA', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }
+              style: { backgroundColor: '#450a0a', color: '#FCA5A5', fontSize: '13px', padding: '10px', borderRadius: '6px', border: '1px solid #7F1D1D', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }
             };
           }
           return null;
@@ -183,13 +192,12 @@ export default function MapView({ nodes = [], routes = [], anomalies = [], onNod
       >
         <Map
           mapLib={maplibregl}
-          mapStyle={MAP_STYLE}
+          mapStyle={mapStyle}
           reuseMaps
-          preventStyleDiffing={true}
         />
       </DeckGL>
 
-      <div className="map-watermark" style={{ position: 'absolute', bottom: '16px', left: '16px', zIndex: 10, fontSize: '11px', color: '#64748B', fontWeight: 600, background: 'rgba(255,255,255,0.7)', padding: '4px 8px', borderRadius: '4px' }}>
+      <div className="map-watermark" style={{ position: 'absolute', bottom: '16px', left: '16px', zIndex: 10, fontSize: '11px', color: isDark ? '#94A3B8' : '#64748B', fontWeight: 600, background: isDark ? 'rgba(15,23,42,0.7)' : 'rgba(255,255,255,0.7)', padding: '4px 8px', borderRadius: '4px' }}>
         A.P.E.X Digital Twin · Powered by Deck.gl & Maplibre
       </div>
     </div>

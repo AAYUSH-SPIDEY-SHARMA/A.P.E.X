@@ -2,7 +2,7 @@
 // Replace with real values once Member 1 sets up the GCP project
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyCbHhyqfrw3ioAs0V04FKYnCHCQqkfO1NI",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyBlrzzFgr2tBR0tL_5D1lHyBV5G7g44QkM",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "project-96d2fc7b-e1a1-418a-87a.firebaseapp.com",
   databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://project-96d2fc7b-e1a1-418a-87a-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "project-96d2fc7b-e1a1-418a-87a",

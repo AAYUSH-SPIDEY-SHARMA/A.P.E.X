@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import './App.css';
 import Header from './components/Header/Header';
 import MapView from './components/Map/MapView';
@@ -17,6 +17,20 @@ function App() {
   const [selectedNode, setSelectedNode] = useState(null);
   const [toasts, setToasts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  // ── Theme state with localStorage persistence ──
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('apex-theme') || 'light';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('apex-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  }, []);
 
   // Compute KPIs from state — no useEffect needed, just derive from data
   const kpis = useMemo(() => {
@@ -123,7 +137,7 @@ function App() {
 
   return (
     <div className="app">
-      <Header activeRoutes={kpis.activeRoutes} activeNodes={kpis.activeNodes} />
+      <Header activeRoutes={kpis.activeRoutes} activeNodes={kpis.activeNodes} theme={theme} onToggleTheme={toggleTheme} />
 
       <div className="app__content">
         <div className="app__map">
@@ -132,6 +146,7 @@ function App() {
             routes={routes}
             anomalies={anomalies}
             onNodeClick={handleNodeClick}
+            theme={theme}
           />
         </div>
 
