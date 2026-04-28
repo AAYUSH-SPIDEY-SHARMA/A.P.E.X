@@ -1,5 +1,6 @@
-/* KPIDashboard.css */
+/* KPIDashboard.css — Phase 7G Mission Control */
 
+/* ── KPI Bar ── */
 .kpi-bar {
   height: var(--kpi-bar-height);
   display: flex;
@@ -14,17 +15,17 @@
 .kpi-card {
   flex: 1;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
-  padding: var(--space-3) var(--space-4);
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-lg);
   background: var(--color-bg-primary);
   border: 1px solid var(--color-border);
   transition: all var(--transition-base);
   position: relative;
   overflow: hidden;
+  min-width: 0;
 }
 
 .kpi-card:hover {
@@ -32,27 +33,67 @@
   box-shadow: var(--shadow-md);
 }
 
+/* Column layout for text info inside card */
+.kpi-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
 .kpi-card__icon {
   font-size: var(--text-lg);
   margin-bottom: 2px;
 }
 
+/* Phase 7G: Orbitron-powered numeric display */
 .kpi-card__value {
   font-family: var(--font-mono);
   font-size: var(--text-2xl);
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1;
-  animation: countUp var(--transition-slow) forwards;
+}
+
+.kpi-card__value--orbitron {
+  font-family: 'Orbitron', var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+.kpi-card__unit {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.7;
+  margin-left: 1px;
 }
 
 .kpi-card__label {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
   color: var(--color-text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  white-space: nowrap;
 }
+
+/* Phase 7G: Status badge pills inside KPI cards */
+.kpi-card__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.kpi-card__badge--safe   { background: rgba(16,185,129,0.15); color: #34d399; }
+.kpi-card__badge--info   { background: rgba(99,102,241,0.15);  color: #818cf8; }
+.kpi-card__badge--danger { background: rgba(239,68,68,0.15);   color: #f87171; }
 
 .kpi-card__trend {
   font-size: 10px;
@@ -62,12 +103,79 @@
   gap: 2px;
 }
 
-.kpi-card__trend--up {
-  color: var(--color-success);
+.kpi-card__trend--up   { color: var(--color-success); }
+.kpi-card__trend--down { color: var(--color-danger); }
+
+/* Phase 7G: Icon Wrap — glowing circular badge per KPI type */
+.kpi-card__icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
 }
 
-.kpi-card__trend--down {
-  color: var(--color-danger);
+.kpi-card__icon-wrap--green  { background: rgba(16,185,129,0.12);  border: 1px solid rgba(16,185,129,0.25); }
+.kpi-card__icon-wrap--amber  { background: rgba(245,158,11,0.12);  border: 1px solid rgba(245,158,11,0.25); }
+.kpi-card__icon-wrap--cascade { border-radius: 8px; }
+
+.kpi-card__icon-glyph {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Phase 7G: Critical pulse animation for high cascade risk */
+.kpi-card--critical-pulse {
+  animation: criticalPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes criticalPulse {
+  0%, 100% { border-color: rgba(239,68,68,0.2); }
+  50%       { border-color: rgba(239,68,68,0.6); box-shadow: 0 0 12px rgba(239,68,68,0.15); }
+}
+
+/* Phase 7G: Hexagonal KPI badge for integer metrics */
+.kpi-hex-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.kpi-hex-badge__shape {
+  width: 52px;
+  height: 52px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.kpi-hex-badge__shape:hover {
+  transform: scale(1.08);
+}
+
+.kpi-hex-badge__value {
+  font-family: 'Orbitron', var(--font-mono);
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.kpi-hex-badge__label {
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: center;
+  max-width: 60px;
+  line-height: 1.2;
 }
 
 /* Accent bars at bottom of KPI cards */
@@ -129,4 +237,93 @@
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
+}
+
+/* ══════════════════════════════════════════════════════════
+   MISSION CONTROL KPI — Dark Mode Enhancements
+   ══════════════════════════════════════════════════════════ */
+
+[data-theme="dark"] .kpi-bar {
+  background: rgba(5, 10, 20, 0.95);
+  border-top: 1px solid rgba(99,102,241,0.18);
+  box-shadow:
+    0 -1px 0 rgba(99,102,241,0.12),
+    0 -8px 32px rgba(0,0,0,0.5);
+  backdrop-filter: blur(20px) saturate(140%);
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+}
+
+[data-theme="dark"] .kpi-card {
+  background: rgba(10, 15, 28, 0.9);
+  border: 1px solid rgba(99,102,241,0.12);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+  transition: all 0.25s ease;
+}
+
+[data-theme="dark"] .kpi-card:hover {
+  border-color: rgba(99,102,241,0.35);
+  box-shadow:
+    0 0 20px rgba(99,102,241,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+  transform: translateY(-3px);
+}
+
+/* Orbitron font for KPI values in dark mode */
+[data-theme="dark"] .kpi-card__value {
+  font-family: var(--font-display, 'Orbitron', 'JetBrains Mono', monospace);
+  letter-spacing: 0.04em;
+  font-size: 18px;
+}
+
+[data-theme="dark"] .kpi-card__label {
+  color: rgba(71, 85, 105, 0.9);
+  letter-spacing: 0.08em;
+}
+
+/* Neon glow on accent bars */
+[data-theme="dark"] .kpi-card--eta::after {
+  background: linear-gradient(90deg, #4f46e5, #818cf8);
+  box-shadow: 0 0 12px rgba(99,102,241,0.6);
+  height: 2px;
+}
+
+[data-theme="dark"] .kpi-card--cost::after {
+  background: linear-gradient(90deg, #059669, #34d399);
+  box-shadow: 0 0 12px rgba(16,185,129,0.5);
+  height: 2px;
+}
+
+[data-theme="dark"] .kpi-card--trucks::after {
+  background: linear-gradient(90deg, #d97706, #fbbf24);
+  box-shadow: 0 0 12px rgba(245,158,11,0.5);
+  height: 2px;
+}
+
+[data-theme="dark"] .kpi-card--health::after {
+  background: linear-gradient(90deg, #4f46e5, #818cf8);
+  box-shadow: 0 0 12px rgba(99,102,241,0.5);
+  height: 2px;
+}
+
+/* Ring gauge bg in dark */
+[data-theme="dark"] .kpi-ring__bg {
+  stroke: rgba(30, 41, 59, 0.9);
+}
+
+/* Card icon glow */
+[data-theme="dark"] .kpi-card__icon {
+  filter: drop-shadow(0 0 6px rgba(99,102,241,0.5));
+}
+
+/* Trend labels in dark */
+[data-theme="dark"] .kpi-card__trend--up {
+  color: #34d399;
+  text-shadow: 0 0 8px rgba(52,211,153,0.4);
+}
+
+[data-theme="dark"] .kpi-card__trend--down,
+[data-theme="dark"] .kpi-card__trend--danger {
+  color: #f87171;
+  text-shadow: 0 0 8px rgba(248,113,113,0.4);
 }

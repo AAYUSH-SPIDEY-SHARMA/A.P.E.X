@@ -2,7 +2,7 @@
    A.P.E.X Design System — Light Mode Premium
    ══════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+/* Fonts are loaded in globals.css — single consolidated import for all families */
 
 :root {
   /* ── Colors: Core Palette ── */
@@ -168,9 +168,12 @@
   --glass-blur: blur(16px);
 }
 
-/* Smooth theme transition */
-*, *::before, *::after {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+/* Smooth theme transition — only active during theme toggle (fix H-07) */
+.theme-transitioning,
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
 }
 
 /* ── Animations ── */
@@ -223,3 +226,85 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* ── Phase 4+5: Advanced Animations ── */
+@keyframes ripple {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+@keyframes cascadeWave {
+  0% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(239,68,68,0.6); }
+  50% { transform: scale(1.04); opacity: 1; box-shadow: 0 0 0 12px rgba(239,68,68,0); }
+  100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+}
+
+@keyframes solverPulse {
+  0%,100% { opacity: 0.6; transform: scaleX(0.92); }
+  50% { opacity: 1; transform: scaleX(1); }
+}
+
+@keyframes waveIn {
+  from { clip-path: inset(0 100% 0 0); opacity: 0; }
+  to { clip-path: inset(0 0% 0 0); opacity: 1; }
+}
+
+@keyframes glowPulse {
+  0%,100% { box-shadow: 0 0 8px 0px rgba(37,99,235,0.3); }
+  50% { box-shadow: 0 0 24px 4px rgba(37,99,235,0.55); }
+}
+
+@keyframes successPop {
+  0% { transform: scale(0.85); opacity: 0; }
+  70% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes statusBlink {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* ── Phase 4+5: Advanced Tokens ── */
+:root {
+  /* Gradient accents */
+  --gradient-brand: linear-gradient(135deg, #4F46E5 0%, #2563EB 50%, #0EA5E9 100%);
+  --gradient-danger: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
+  --gradient-success: linear-gradient(135deg, #059669 0%, #10B981 100%);
+  --gradient-warning: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
+  --gradient-dark-panel: linear-gradient(160deg, rgba(15,23,42,0.92) 0%, rgba(30,41,59,0.88) 100%);
+  --gradient-card-highlight: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(37,99,235,0.04) 100%);
+
+  /* Bottleneck colors */
+  --color-bottleneck: #DC2626;
+  --color-bottleneck-ghost: rgba(220,38,38,0.12);
+  --color-bottleneck-glow: rgba(220,38,38,0.35);
+
+  /* Status chip colors */
+  --color-status-online: #10B981;
+  --color-status-offline: #64748B;
+  --color-status-degraded: #F59E0B;
+
+  /* Enhanced glow shadows */
+  --shadow-glow-indigo: 0 0 20px rgba(99,102,241,0.25);
+  --shadow-glow-cyan: 0 0 20px rgba(6,182,212,0.25);
+  --shadow-glow-amber: 0 0 20px rgba(245,158,11,0.25);
+
+  /* Glassmorphism upgrades */
+  --glass-bg-strong: rgba(255,255,255,0.88);
+  --glass-bg-accent: rgba(99,102,241,0.06);
+  --glass-border-accent: rgba(99,102,241,0.2);
+
+  /* Panel heights */
+  --risk-matrix-height: 220px;
+  --alert-item-height: 52px;
+}
+
+[data-theme="dark"] {
+  --gradient-card-highlight: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(37,99,235,0.06) 100%);
+  --glass-bg-strong: rgba(15,23,42,0.92);
+  --glass-bg-accent: rgba(99,102,241,0.08);
+  --glass-border-accent: rgba(99,102,241,0.25);
+  --color-bottleneck-ghost: rgba(248,113,113,0.15);
+}
+

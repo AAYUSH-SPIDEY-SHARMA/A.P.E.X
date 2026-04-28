@@ -187,13 +187,16 @@ class RouteMetrics:
         Estimated demurrage cost saved by rerouting.
 
         Industry benchmark: ₹1,200/hour/truck average demurrage cost
-        in Indian logistics (AITD report 2024). We estimate savings as
-        the avoided delay hours × ₹1,200 × average trucks affected.
+        in Indian logistics (AITD report 2024). Estimation uses:
+          - trucks_affected: proportional to route segments (longer route = more trucks)
+          - delay_hours: derived from cumulative risk score on the disrupted path
+          - cost_per_hour: ₹1,200 (AITD 2024 national average)
         """
-        # Conservative estimate: 12 trucks, 6 hours average delay avoided
-        trucks_affected = 12
-        avg_delay_hours = max(2.0, self.total_risk_score * 10)
-        cost_per_hour = 1200  # INR per truck per hour
+        # Trucks affected scales with route length: ~4 trucks per segment on NH-48
+        trucks_affected = max(4, self.num_segments * 4)
+        # Delay hours from cumulative risk + distance penalty
+        avg_delay_hours = max(1.5, self.total_risk_score * 8 + self.total_distance_km / 500)
+        cost_per_hour = 1200  # INR per truck per hour (AITD 2024)
 
         return int(trucks_affected * avg_delay_hours * cost_per_hour)
 

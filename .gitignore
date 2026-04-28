@@ -1,68 +1,92 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+# ============================================================================
+# A.P.E.X — .gitignore (Security-hardened for GitHub)
+# ============================================================================
 
-# Virtual environments
-venv/
-.venv/
-env/
-
-# Environment variables (contain real API keys)
+# ── Environment Variables (CONTAIN REAL API KEYS — NEVER COMMIT) ──
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+backend/processor/.env
+backend/processor/.env.*
 
-# GCP credentials (NEVER commit these)
+# ── GCP Credentials (NEVER commit service account keys) ──
 service-account-key*.json
 *-credentials.json
 *-service-account.json
+*.pem
+*.p12
 
-# IDE
+# ── Python ──
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+pip-log.txt
+venv/
+.venv/
+env/
+.pytest_cache/
+
+# ── Node / Frontend ──
+node_modules/
+dist/
+build/
+.cache/
+
+# ── IDE / OS ──
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# OS
 .DS_Store
 Thumbs.db
 
-# Node modules (frontend)
-node_modules/
-dist/
-build/
-
-# Python
-*.egg-info/
-*.egg
-pip-log.txt
-
-# Logs
-*.log
-
-# Docker
+# ── Docker ──
 docker-compose.override.yml
 
-# ML model binaries (too large for Git — regenerate via training scripts)
+# ── ML Model Binaries (too large — regenerate via training scripts) ──
 ml/models/*.pkl
+ml/models/*.joblib
+ml/models/*.h5
 
-# Temporary deploy directory
+# ── Logs ──
+*.log
+
+# ── Firebase local cache ──
+.firebase/
+.firebaserc
+
+# ── Temporary / Deploy directories ──
 deploy_ml_agent/
-
-# Old personal project files
 vivesh_ml_output/
+
+# ── Large / unnecessary binary files ──
 *.gguf
 *.bin
+Figure_1.png
+
+# ── Internal team docs (contain API keys and internal info — NOT for public repo) ──
+MEMBER_1_ACTION_REPORT_AAYUSH.md
+MEMBER_2_ACTION_REPORT_VIVESH.md
+MEMBER_3_ACTION_REPORT_RAKSHAK.md
+UPDATED_MEMBER_3_ACTION_REPORT_RAKSHAK.md
+GCP_DEPLOYMENT_GUIDE.md
+MASTER_IMPLEMENTATION_PLAN.md
+PHASE7_UPGRADE_BLUEPRINT.md
+PROGRESS_TRACKER.md
+A.P.E.X.md
+apex_full_audit_report.md
+guide_audit.md
+walkthrough.md
+DEMO_SCRIPT.md
 check_gpu.py
 run_phase2_merge_quantize.py
 run_phase2b_convert.py
 jhrebfhjedb.md
 
-# Internal reports and guides (NOT part of codebase)
-MEMBER_1_ACTION_REPORT_AAYUSH.md
-MEMBER_2_ACTION_REPORT_VIVESH.md
-MEMBER_3_ACTION_REPORT_RAKSHAK.md
-GCP_DEPLOYMENT_GUIDE.md
-guide_audit.md
-A.P.E.X.md
+# ── Test files not needed in repo ──
+test_gemini.py

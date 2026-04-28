@@ -1,0 +1,164 @@
+/* GeminiQueryBar.css — Natural Language AI Query Interface */
+
+.gemini-query-wrapper {
+  width: 100%;
+}
+
+.gemini-query {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 14px;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.gemini-query:focus-within {
+  border-color: rgba(139, 92, 246, 0.6);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15), inset 0 0 20px rgba(139, 92, 246, 0.03), 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.gemini-query__icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  animation: geminiPulse 3s ease-in-out infinite;
+}
+
+@keyframes geminiPulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+.gemini-query__input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #f1f5f9;
+  font-size: 13px;
+  font-family: var(--font-sans);
+  min-width: 0;
+}
+
+.gemini-query__input::placeholder {
+  color: rgba(203, 213, 225, 0.6);
+  font-style: italic;
+}
+
+.gemini-query__submit {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+.gemini-query__submit:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+}
+
+.gemini-query__submit:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Response card - ALWAYS solid dark bg for maximum readability */
+.gemini-response {
+  margin-top: 8px;
+  padding: 12px 14px;
+  background: #1e1b4b;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 12px;
+  animation: slideUp 0.3s ease-out;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.gemini-response__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.gemini-response__badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.gemini-response__badge--nominal { background: rgba(16,185,129,0.2); color: #34d399; }
+.gemini-response__badge--low { background: rgba(16,185,129,0.2); color: #34d399; }
+.gemini-response__badge--medium { background: rgba(245,158,11,0.2); color: #fbbf24; }
+.gemini-response__badge--high { background: rgba(239,68,68,0.2); color: #f87171; }
+
+.gemini-response__text {
+  font-size: 12.5px;
+  color: #e2e8f0;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.gemini-response__latency {
+  font-size: 10px;
+  color: rgba(167, 139, 250, 0.7);
+  margin-top: 6px;
+  font-family: var(--font-mono);
+}
+
+.gemini-response__close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: rgba(203, 213, 225, 0.6);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0 4px;
+  line-height: 1;
+}
+.gemini-response__close:hover {
+  color: #f1f5f9;
+}
+
+/* Loading spinner */
+.gemini-query__loading {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(139, 92, 246, 0.2);
+  border-top-color: #8b5cf6;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── LIGHT THEME ─── */
+/* Query bar stays dark even in light theme for contrast over the map */
+/* Response card also stays dark for readability */
+/* The solid dark backgrounds ensure text is ALWAYS readable */

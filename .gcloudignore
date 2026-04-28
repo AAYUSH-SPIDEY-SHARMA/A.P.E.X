@@ -1,0 +1,13 @@
+# Ignore frontend build for Cloud Run (backend only)
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+.git/
+.github/
+__pycache__/
+*.pyc
+.env
+node_modules/
+docs/
+*.md
+!README.md

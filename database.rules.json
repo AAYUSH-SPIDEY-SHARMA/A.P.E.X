@@ -1,6 +1,28 @@
 {
   "rules": {
-    ".read": true,
-    ".write": true
+    "supply_chain": {
+      "nodes": {
+        ".read": true,
+        ".write": "auth != null",
+        "$node_id": {
+          ".validate": "newData.hasChildren(['lat', 'lng', 'status', 'utilization'])"
+        }
+      },
+      "active_routes": {
+        ".read": true,
+        ".write": "auth != null"
+      },
+      "alerts": {
+        ".read": true,
+        ".write": "auth != null",
+        "$alert_id": {
+          ".validate": "newData.hasChildren(['message', 'severity', 'timestamp'])"
+        }
+      },
+      "anomalies": {
+        ".read": true,
+        ".write": "auth != null"
+      }
+    }
   }
 }

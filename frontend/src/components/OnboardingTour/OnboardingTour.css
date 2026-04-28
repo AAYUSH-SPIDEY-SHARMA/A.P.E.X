@@ -1,0 +1,168 @@
+/* OnboardingTour.css — Guided walkthrough overlay */
+
+.onboarding-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.onboarding-card {
+  background: linear-gradient(160deg, #1e293b, #0f172a);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.1);
+  animation: cardEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes cardEntrance {
+  from { opacity: 0; transform: scale(0.9) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.onboarding-card__step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.onboarding-card__step-badge {
+  font-size: 10px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+}
+
+.onboarding-card__step-dots {
+  display: flex;
+  gap: 5px;
+  margin-left: auto;
+}
+
+.onboarding-card__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.2);
+  transition: all 0.3s ease;
+}
+
+.onboarding-card__dot--active {
+  background: #6366f1;
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
+  width: 18px;
+  border-radius: 4px;
+}
+
+.onboarding-card__dot--done {
+  background: #10b981;
+}
+
+.onboarding-card__icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  display: block;
+  text-align: center;
+  animation: floatGlow 3s ease-in-out infinite;
+}
+
+@keyframes floatGlow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.onboarding-card__title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.onboarding-card__desc {
+  font-size: 14px;
+  color: #94a3b8;
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.onboarding-card__highlight {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+.onboarding-card__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.onboarding-card__skip {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 6px 12px;
+  transition: color 0.2s;
+}
+
+.onboarding-card__skip:hover {
+  color: #94a3b8;
+}
+
+.onboarding-card__next {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.onboarding-card__next:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+}
+
+.onboarding-card__sdg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.onboarding-card__sdg-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(255, 111, 0, 0.15);
+  color: #fb923c;
+  letter-spacing: 0.04em;
+}

@@ -1,0 +1,91 @@
+/* ══════════════════════════════════════════════════════════
+   ErrorBoundary — Phase S-04: Crash Recovery
+   
+   Catches React render errors in child tree and displays
+   a themed fallback UI with retry capability.
+   
+   Variants:
+     - map:     "Map failed to load" overlay
+     - sidebar: "Component unavailable" compact card
+     - kpi:     "Data unavailable" inline placeholder
+     - default: Generic fallback
+   ══════════════════════════════════════════════════════════ */
+
+.error-boundary__fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  text-align: center;
+  gap: var(--space-3);
+  animation: fadeIn var(--transition-slow) ease-out;
+}
+
+.error-boundary__fallback--map {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: var(--color-bg-primary);
+  backdrop-filter: blur(8px);
+}
+
+.error-boundary__fallback--sidebar {
+  background: var(--glass-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  min-height: 120px;
+}
+
+.error-boundary__fallback--kpi {
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  min-height: 80px;
+}
+
+.error-boundary__icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.error-boundary__title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.error-boundary__message {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  max-width: 280px;
+  line-height: 1.5;
+  font-family: var(--font-mono);
+  word-break: break-word;
+}
+
+.error-boundary__retry {
+  padding: var(--space-2) var(--space-4);
+  background: var(--gradient-brand);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.error-boundary__retry:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.error-boundary__retry:active {
+  transform: translateY(0);
+}

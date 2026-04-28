@@ -12,7 +12,7 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || ""
 };
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8082";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 export const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 
@@ -34,12 +34,14 @@ export const STATUS = {
 
 // Anomaly types
 export const ANOMALY_TYPES = [
-  { value: 'MONSOON', label: 'Monsoon Storm', icon: '🌧️', description: 'Heavy rainfall causing landslides' },
-  { value: 'FLOOD', label: 'Flooding', icon: '🌊', description: 'Water logging on highways' },
-  { value: 'ACCIDENT', label: 'Major Accident', icon: '🚗', description: 'Highway collision blocking corridor' },
-  { value: 'RTO_GRIDLOCK', label: 'RTO Gridlock', icon: '🚧', description: 'State border checkpoint congestion' },
-  { value: 'ICEGATE_FAILURE', label: 'ICEGATE Failure', icon: '🖥️', description: 'Customs portal system failure' },
+  { value: 'MONSOON', label: 'Monsoon', icon: '🌧️', description: 'Heavy rainfall causing landslides on NH-48 Western Ghats' },
+  { value: 'ACCIDENT', label: 'Accident', icon: '💥', description: 'Highway collision blocking major corridor' },
+  { value: 'ICEGATE_FAILURE', label: 'ICEGATE', icon: '🖥️', description: 'Customs portal system failure at ICDs' },
+  { value: 'RTO_GRIDLOCK', label: 'RTO Block', icon: '🚧', description: 'State border checkpoint congestion gridlock' },
+  { value: 'FUEL_SHORTAGE', label: 'Fuel', icon: '⛽', description: 'Fuel shortage causing truck stalling' },
+  { value: 'FLOOD', label: 'Flood', icon: '🌊', description: 'Water logging on highways near coastal routes' },
 ];
+
 
 // Preset locations for anomaly injection
 export const PRESET_LOCATIONS = [

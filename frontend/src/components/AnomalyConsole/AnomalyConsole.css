@@ -1,19 +1,20 @@
-/* AnomalyConsole.css */
+/* AnomalyConsole.css — Phase 4 Upgrade */
+
+.anomaly-console {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-1) 0;
+}
 
 .anomaly-console__title {
   font-size: var(--text-sm);
   font-weight: 700;
   color: var(--color-text-primary);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-1);
   display: flex;
   align-items: center;
   gap: var(--space-2);
-}
-
-.anomaly-console__form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
 }
 
 .anomaly-console__field {
@@ -22,13 +23,65 @@
   gap: var(--space-1);
 }
 
-/* Severity slider */
-.anomaly-console__slider-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+/* ── Scenario Type Card Grid ── */
+.anomaly-console__type-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
 }
 
+.anomaly-console__type-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 4px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: var(--font-sans);
+}
+
+.anomaly-console__type-card:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-ghost);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.anomaly-console__type-card.active {
+  border-color: var(--color-danger);
+  background: var(--color-danger-ghost);
+  box-shadow: 0 0 0 2px var(--color-danger-ghost), var(--shadow-sm);
+}
+
+.anomaly-console__type-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.anomaly-console__type-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.anomaly-console__type-desc {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  background: var(--color-bg-secondary);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  border-left: 2px solid var(--color-danger);
+  margin-top: 2px;
+}
+
+/* Severity slider */
 .anomaly-console__slider-header {
   display: flex;
   justify-content: space-between;
@@ -68,6 +121,110 @@
 .anomaly-console__slider::-webkit-slider-thumb:hover {
   transform: scale(1.2);
   box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+}
+
+/* ── Impact Preview ── */
+.anomaly-console__preview {
+  display: flex;
+  align-items: center;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  padding: var(--space-2) var(--space-3);
+  gap: var(--space-2);
+}
+
+.anomaly-console__preview-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.anomaly-console__preview-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.anomaly-console__preview-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 800;
+}
+
+.anomaly-console__preview-sep {
+  width: 1px;
+  height: 28px;
+  background: var(--color-border);
+  flex-shrink: 0;
+}
+
+/* ── Solver Animation ── */
+.solver-animation {
+  background: linear-gradient(135deg, rgba(37,99,235,0.06), rgba(99,102,241,0.06));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  animation: fadeInUp var(--transition-base) forwards;
+}
+
+.solver-animation__bar {
+  height: 3px;
+  background: var(--gradient-brand);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-2);
+  animation: solverPulse 0.8s ease-in-out infinite;
+}
+
+.solver-animation__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.solver-animation__step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  opacity: 0.4;
+  transition: opacity var(--transition-base);
+}
+
+.solver-animation__step.active {
+  opacity: 1;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.solver-animation__step.done {
+  opacity: 0.7;
+  color: var(--color-success);
+  text-decoration: line-through;
+  text-decoration-color: var(--color-success);
+}
+
+.solver-animation__step-icon { font-size: 12px; }
+.solver-animation__step-text { flex: 1; }
+
+.solver-animation__step-check {
+  font-size: 10px;
+  color: var(--color-success);
+  font-weight: 700;
+}
+
+.solver-animation__step-spinner {
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid var(--color-primary);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
 }
 
 /* Inject button */
@@ -130,14 +287,15 @@
   box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4);
 }
 
-.anomaly-console__preset-btn:active {
-  transform: scale(0.97);
-}
-
 .anomaly-console__preset-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none !important;
+}
+
+.anomaly-console__autopilot-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .anomaly-console__reset-btn {

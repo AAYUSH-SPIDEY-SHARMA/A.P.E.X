@@ -26,6 +26,7 @@ import math
 import random
 import sys
 import uuid
+import os
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 
@@ -93,6 +94,90 @@ TOLL_PLAZAS = [
         "lanes": ["N", "S"],
     },
 ]
+
+# ---------------------------------------------------------------------------
+# REAL TRAFFIC DENSITY — Google Maps Routes API Integration (Phase 5)
+# Uses real-world traffic conditions to modulate FASTag event rates.
+# ---------------------------------------------------------------------------
+
+# Per-plaza density factor (1.0 = normal, >1.0 = congested, <1.0 = empty)
+_traffic_density: dict = {}  # tollPlazaId -> float
+_TRAFFIC_FETCH_INTERVAL = 60  # seconds between API calls
+
+
+async def fetch_real_traffic_density(api_key: str):
+    """
+    Calls Google Maps Routes API to estimate real traffic density
+    at each toll plaza. Compares durationInTraffic vs staticDuration
+    to derive a congestion ratio.
+
+    Runs in a background loop, updating _traffic_density every 60 seconds.
+    """
+    import aiohttp
+
+    while True:
+        try:
+            async with aiohttp.ClientSession() as session:
+                for i in range(len(TOLL_PLAZAS) - 1):
+                    origin = TOLL_PLAZAS[i]
+                    dest = TOLL_PLAZAS[i + 1]
+
+                    payload = {
+                        "origin": {
+                            "location": {
+                                "latLng": {"latitude": origin["lat"], "longitude": origin["lng"]}
+                            }
+                        },
+                        "destination": {
+                            "location": {
+                                "latLng": {"latitude": dest["lat"], "longitude": dest["lng"]}
+                            }
+                        },
+                        "travelMode": "DRIVE",
+                        "routingPreference": "TRAFFIC_AWARE",
+                    }
+
+                    headers = {
+                        "Content-Type": "application/json",
+                        "X-Goog-Api-Key": api_key,
+                        "X-Goog-FieldMask": "routes.duration,routes.staticDuration",
+                    }
+
+                    async with session.post(
+                        "https://routes.googleapis.com/directions/v2:computeRoutes",
+                        json=payload,
+                        headers=headers,
+                    ) as resp:
+                        if resp.status == 200:
+                            data = await resp.json()
+                            routes = data.get("routes", [])
+                            if routes:
+                                # Parse durations (format: "1234s")
+                                dur_str = routes[0].get("duration", "0s").rstrip("s")
+                                static_str = routes[0].get("staticDuration", "0s").rstrip("s")
+                                dur = float(dur_str) if dur_str else 1.0
+                                static = float(static_str) if static_str else 1.0
+
+                                # Congestion ratio: traffic_time / normal_time
+                                ratio = dur / static if static > 0 else 1.0
+                                ratio = max(0.3, min(2.0, ratio))  # clamp
+
+                                _traffic_density[origin["tollPlazaId"]] = ratio
+
+                                print(
+                                    f"  [TRAFFIC] {origin['tollPlazaName']}: "
+                                    f"density={ratio:.2f}x "
+                                    f"(traffic={dur:.0f}s vs normal={static:.0f}s)"
+                                )
+                        else:
+                            print(f"  [TRAFFIC] API error {resp.status} for {origin['tollPlazaName']}")
+
+                    await asyncio.sleep(0.5)  # Rate limit between requests
+
+        except Exception as e:
+            print(f"  [TRAFFIC] Error fetching traffic data: {e}")
+
+        await asyncio.sleep(_TRAFFIC_FETCH_INTERVAL)
 
 # ---------------------------------------------------------------------------
 # TRUCK FLEET — 50 simulated trucks with Indian registration format
@@ -299,6 +384,53 @@ class ConsolePublisher:
         print(f"\n[OK] Total events published: {self.event_count}")
 
 
+class HttpPublisher:
+    """Publishes events to the A.P.E.X backend via HTTP POST /process."""
+
+    def __init__(self, base_url: str = "http://localhost:8080"):
+        self.base_url = base_url
+        self.event_count = 0
+        self.errors = 0
+        self._session = None
+        print(f"[HTTP] Sending events to: {self.base_url}/process")
+
+    async def _get_session(self):
+        if self._session is None:
+            import aiohttp
+            self._session = aiohttp.ClientSession()
+        return self._session
+
+    async def publish(self, event: dict):
+        self.event_count += 1
+        try:
+            session = await self._get_session()
+            async with session.post(
+                f"{self.base_url}/process",
+                json=event,
+                timeout=__import__('aiohttp').ClientTimeout(total=5),
+            ) as resp:
+                if resp.status != 200:
+                    self.errors += 1
+                elif self.event_count % 50 == 0:
+                    data = await resp.json()
+                    status = data.get("node_status", "?")
+                    util = data.get("node_utilization", 0)
+                    print(
+                        f"  [HTTP] {self.event_count} events | "
+                        f"{event['vehicleRegNo']} @ {event['tollPlazaName']} | "
+                        f"status={status} util={util:.2f}"
+                    )
+        except Exception as e:
+            self.errors += 1
+            if self.errors <= 3:
+                print(f"  [HTTP] Error: {e}")
+
+    async def close(self):
+        if self._session:
+            await self._session.close()
+        print(f"\n[OK] Total events sent via HTTP: {self.event_count} (errors: {self.errors})")
+
+
 class PubSubPublisher:
     """Publishes events to Google Cloud Pub/Sub topic."""
 
@@ -397,7 +529,7 @@ async def run_simulation(
         truck_count: Number of simulated trucks
     """
     trucks = generate_truck_fleet(truck_count)
-    interval = 1.0 / rate if rate > 0 else 1.0
+    base_interval = 1.0 / rate if rate > 0 else 1.0
     total_events = rate * duration
 
     print(f"\n[APEX] A.P.E.X FASTag Simulator")
@@ -442,6 +574,11 @@ async def run_simulation(
             event = generate_fastag_event(truck, plaza)
             await publisher.publish(event)
             event_count += 1
+
+            # Modulate event rate based on real traffic density for this plaza
+            density = _traffic_density.get(plaza["tollPlazaId"], 1.0)
+            # Higher density = shorter interval = more events (congestion simulation)
+            interval = base_interval / density
 
             # Advance truck to next toll plaza (simulates movement)
             next_idx = truck["currentPlazaIndex"] + truck["direction"]
@@ -502,7 +639,7 @@ Examples:
 
     parser.add_argument(
         "--mode",
-        choices=["console", "pubsub", "firebase"],
+        choices=["console", "http", "pubsub", "firebase"],
         default="console",
         help="Output mode (default: console)",
     )
@@ -542,12 +679,19 @@ Examples:
         default=None,
         help="Firebase RTDB URL (default: http://127.0.0.1:9000 for emulator)",
     )
+    parser.add_argument(
+        "--real-traffic",
+        action="store_true",
+        help="Enable real Google Maps traffic density modulation (requires GOOGLE_MAPS_API_KEY env var)",
+    )
 
     args = parser.parse_args()
 
     # Create publisher based on mode
     if args.mode == "console":
         publisher = ConsolePublisher()
+    elif args.mode == "http":
+        publisher = HttpPublisher()
     elif args.mode == "pubsub":
         publisher = PubSubPublisher(args.project, args.topic)
     elif args.mode == "firebase":
@@ -556,13 +700,43 @@ Examples:
         print(f"[ERROR] Unknown mode: {args.mode}")
         sys.exit(1)
 
-    # Run simulation
-    asyncio.run(run_simulation(
-        publisher=publisher,
-        rate=args.rate,
-        duration=args.duration,
-        truck_count=args.trucks,
-    ))
+    # Start real traffic density loop if enabled
+    traffic_task = None
+    if args.real_traffic:
+        api_key = os.getenv("GOOGLE_MAPS_API_KEY") or os.getenv("VITE_GOOGLE_MAPS_API_KEY")
+        if api_key:
+            print("[TRAFFIC] REAL TRAFFIC DATA ENABLED -- Google Maps Routes API")
+            print(f"   Fetching live density every {_TRAFFIC_FETCH_INTERVAL}s...")
+
+            async def run_with_traffic():
+                traffic = asyncio.create_task(fetch_real_traffic_density(api_key))
+                try:
+                    await run_simulation(
+                        publisher=publisher,
+                        rate=args.rate,
+                        duration=args.duration,
+                        truck_count=args.trucks,
+                    )
+                finally:
+                    traffic.cancel()
+
+            asyncio.run(run_with_traffic())
+        else:
+            print("[TRAFFIC] WARNING: --real-traffic set but no GOOGLE_MAPS_API_KEY found. Using simulated density.")
+            asyncio.run(run_simulation(
+                publisher=publisher,
+                rate=args.rate,
+                duration=args.duration,
+                truck_count=args.trucks,
+            ))
+    else:
+        # Run simulation without real traffic
+        asyncio.run(run_simulation(
+            publisher=publisher,
+            rate=args.rate,
+            duration=args.duration,
+            truck_count=args.trucks,
+        ))
 
 
 if __name__ == "__main__":

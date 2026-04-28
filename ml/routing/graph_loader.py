@@ -205,8 +205,16 @@ def load_highway_graph(
     # Strip _meta key (not part of NetworkX schema) before parsing
     graph_data = {k: v for k, v in raw_data.items() if k != "_meta"}
 
-    # NetworkX 3.3: use link="links" (the default) to match highway_graph.json key name
-    graph = nx.node_link_graph(graph_data, directed=False, multigraph=False)
+    # NetworkX 3.4+ renamed 'link' to 'edges' kwarg — handle both versions
+    try:
+        # NetworkX >= 3.4: edges= parameter
+        graph = nx.node_link_graph(graph_data, directed=False, multigraph=False, edges="links")
+    except TypeError:
+        # NetworkX < 3.4: link= parameter (or auto-detects "links" key)
+        try:
+            graph = nx.node_link_graph(graph_data, directed=False, multigraph=False, link="links")
+        except TypeError:
+            graph = nx.node_link_graph(graph_data, directed=False, multigraph=False)
 
     _validate_graph(graph)
 
