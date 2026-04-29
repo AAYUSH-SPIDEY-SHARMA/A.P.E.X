@@ -525,8 +525,28 @@ def _init_gemini():
         return
 
     # Determine GCP project + location for Vertex AI
-    gcp_project = os.getenv("GOOGLE_CLOUD_PROJECT") or os.getenv("GCP_PROJECT", "")
+    gcp_project = (
+        os.getenv("GOOGLE_CLOUD_PROJECT")
+        or os.getenv("GCP_PROJECT")
+        or os.getenv("GCP_PROJECT_ID")
+        or os.getenv("GCLOUD_PROJECT")
+        or ""
+    )
     gcp_location = os.getenv("GCP_LOCATION", "asia-south1")
+
+    # Auto-detect project from Cloud Run metadata server if not set
+    if not gcp_project:
+        try:
+            import urllib.request
+            req = urllib.request.Request(
+                "http://metadata.google.internal/computeMetadata/v1/project/project-id",
+                headers={"Metadata-Flavor": "Google"}
+            )
+            with urllib.request.urlopen(req, timeout=2) as resp:
+                gcp_project = resp.read().decode("utf-8").strip()
+                logger.info(f"[GEMINI] Auto-detected GCP project from metadata: {gcp_project}")
+        except Exception:
+            logger.debug("[GEMINI] Not running on GCP — metadata server unavailable")
 
     try:
         # Try Vertex AI first (Cloud Run has implicit credentials)
@@ -544,8 +564,14 @@ def _init_gemini():
             gemini_model = client
             logger.info("[GEMINI] API key client initialized (local dev mode)")
         else:
-            logger.warning("[GEMINI] No GCP project or API key set — running without Gemini")
-            return
+            # Last resort: try ADC without explicit project (works on some GCP environments)
+            try:
+                client = genai.Client(vertexai=True, location=gcp_location)
+                gemini_model = client
+                logger.info(f"[GEMINI] Vertex AI client initialized with ADC (no explicit project)")
+            except Exception as adc_err:
+                logger.warning(f"[GEMINI] No GCP project or API key set — running without Gemini: {adc_err}")
+                return
         logger.info("[GEMINI] Gemini 2.5 Flash ready — structured output enabled ✓")
     except Exception as e:
         logger.error(f"[GEMINI] Init failed: {e}")
