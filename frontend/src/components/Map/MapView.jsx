@@ -103,6 +103,7 @@ function loadGoogleMaps() {
 export default function MapView({
   nodes = [], routes = [], anomalies = [],
   blockedCorridors = [], reroutedCorridors = [],
+  reroutePaths = [],  // BUG-5 FIX: A* reroute coordinate arrays
   corridorPolylines = {}, onNodeClick,
   theme = 'light', heatmapEnabled = false
 }) {
@@ -612,24 +613,86 @@ export default function MapView({
       parameters: { depthTest: false },
     }) : null;
 
+    // ── BUG-5 FIX: A* Reroute PathLayers ─────────────────────────────
+    // Draw the computed A* alternate route with a glowing green dashed line
+    const astarRerouteGlow = reroutePaths.length > 0 ? new PathLayer({
+      id: 'astar-reroute-glow',
+      data: reroutePaths.filter(rp => rp.coordinates?.length > 1),
+      getPath: d => d.coordinates,
+      getColor: [16, 185, 129, 60],  // Emerald green glow
+      getWidth: 14,
+      widthUnits: 'pixels',
+      widthMinPixels: 8,
+      widthMaxPixels: 18,
+      jointRounded: true,
+      capRounded: true,
+      parameters: { depthTest: false },
+    }) : null;
+
+    const astarRerouteLine = reroutePaths.length > 0 ? new PathLayer({
+      id: 'astar-reroute-path',
+      data: reroutePaths.filter(rp => rp.coordinates?.length > 1),
+      getPath: d => d.coordinates,
+      getColor: [16, 185, 129, 240],  // Bright emerald
+      getWidth: 5,
+      widthUnits: 'pixels',
+      widthMinPixels: 3,
+      widthMaxPixels: 8,
+      jointRounded: true,
+      capRounded: true,
+      getDashArray: [10, 5],
+      dashJustified: true,
+      extensions: [new PathStyleExtension({ dash: true })],
+      parameters: { depthTest: false },
+    }) : null;
+
+    // Label at midpoint of each A* reroute path
+    const astarLabelData = reroutePaths
+      .filter(rp => rp.coordinates?.length > 2)
+      .map(rp => {
+        const mid = rp.coordinates[Math.floor(rp.coordinates.length / 2)];
+        return { ...rp, midpoint: mid };
+      });
+
+    const astarLabelLayer = astarLabelData.length > 0 ? new TextLayer({
+      id: 'astar-reroute-labels',
+      data: astarLabelData,
+      pickable: false,
+      getPosition: d => d.midpoint,
+      getText: d => `↗ A* REROUTE · ${d.distanceKm ? d.distanceKm.toFixed(0) + 'km' : ''} · ${d.reroutedCount || 0} trucks`,
+      getSize: 12,
+      getColor: [16, 185, 129, 255],
+      getTextAnchor: 'middle',
+      getAlignmentBaseline: 'bottom',
+      getPixelOffset: [0, -12],
+      fontFamily: '"JetBrains Mono", monospace',
+      fontWeight: 700,
+      background: true,
+      backgroundPadding: [8, 4],
+      getBackgroundColor: [6, 40, 30, 230],
+      getBorderRadius: 4,
+      billboard: true,
+    }) : null;
+
     return [
       trailLayer,
       corridorPathLayer, railPathLayer, maritimeLayer,
       blockedLayer, rerouteLayer,
+      astarRerouteGlow, astarRerouteLine,  // BUG-5: A* computed reroute paths
       heatLayer, bottleneckLayer, disruptionPulseLayer,
-      queueShockwaveLayer,           // 7I: queue shockwave (data-driven, not time-driven)
-      radarSweepLayer, outerRingLayer, // 7D: dual-ring radar halo (v9 compatible)
+      queueShockwaveLayer,
+      radarSweepLayer, outerRingLayer,
       ewayRingLayer, fastTagPingLayer,
       truckLayer, truckLabelLayer,
       nodeLayer, anomalyLayer,
       labelLayer, anomalyLabelLayer, corridorLabelLayer,
+      astarLabelLayer,  // BUG-5: A* reroute labels on top
       velocityLayer,
     ].filter(Boolean);
   }, [
-    nodes, routes, anomalies, blockedCorridors, reroutedCorridors,
+    nodes, routes, anomalies, blockedCorridors, reroutedCorridors, reroutePaths,
     corridorPolylines, onNodeClick, isDark, heatmapEnabled,
     getNodeColor, getTruckColor, zoom, tollPings,
-    // globalTime intentionally NOT here — TripsLayer updated via separate rAF loop
   ]);
 
   // ── Sync layers to Google Maps overlay ──────────────────────────

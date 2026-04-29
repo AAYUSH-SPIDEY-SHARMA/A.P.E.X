@@ -47,7 +47,7 @@ async function callMLAgent(endpoint, body = null, method = 'POST') {
 function App() {
   const {
     nodes, routes, anomalies, alerts,
-    blockedCorridors, reroutedCorridors,
+    blockedCorridors, reroutedCorridors, reroutePaths,
     injectAnomaly, resetState, firebaseConnected,
     autoDetections, lastAutoDetect, geminiAnalysis,
   } = useLocalState();
@@ -307,6 +307,7 @@ function App() {
               anomalies={anomalies}
               blockedCorridors={blockedCorridors}
               reroutedCorridors={reroutedCorridors}
+              reroutePaths={reroutePaths}
               corridorPolylines={corridorPolylines}
               onNodeClick={handleNodeClick}
               theme={theme}

@@ -175,6 +175,8 @@ class RouteMetrics:
     estimated_travel_hours: float = 0.0
     num_segments: int = 0
     avoided_nodes: list[str] = field(default_factory=list)
+    # BUG-5 FIX: Coordinate array for map visualization
+    route_coordinates: list[list[float]] = field(default_factory=list)
 
     @property
     def path_description(self) -> str:
@@ -324,11 +326,23 @@ def find_safe_route(
     metrics = calculate_route_metrics(safe_graph, path)
     metrics.avoided_nodes = removed_nodes
 
+    # BUG-5 FIX: Extract coordinates for map visualization
+    # Each coordinate is [lng, lat] for deck.gl/Mapbox compatibility
+    coords = []
+    for node_id in path:
+        node_data = graph.nodes.get(node_id, {})
+        lat = node_data.get("lat")
+        lng = node_data.get("lng")
+        if lat is not None and lng is not None:
+            coords.append([lng, lat])
+    metrics.route_coordinates = coords
+
     logger.info(
         f"Route found: {metrics.path_description} | "
         f"{metrics.total_distance_km} km | "
         f"₹{metrics.total_toll_cost_inr} toll | "
-        f"~{metrics.estimated_travel_hours}h ETA"
+        f"~{metrics.estimated_travel_hours}h ETA | "
+        f"{len(coords)} waypoints for visualization"
     )
 
     return metrics

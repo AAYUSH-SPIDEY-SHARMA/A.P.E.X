@@ -136,6 +136,8 @@ export function useLocalState() {
   const [firebaseConnected, setFirebaseConnected] = useState(false);
   const [blockedCorridors, setBlockedCorridors] = useState([]);
   const [reroutedCorridors, setReroutedCorridors] = useState([]);
+  // BUG-5 FIX: Store A* reroute paths as coordinate arrays for map visualization
+  const [reroutePaths, setReroutePaths] = useState([]);
   const [autoDetections, setAutoDetections] = useState(0);
   const [lastAutoDetect, setLastAutoDetect] = useState(null);
   const [geminiAnalysis, setGeminiAnalysis] = useState(null);
@@ -297,6 +299,7 @@ export function useLocalState() {
               if (!stillDisrupted) {
                 setBlockedCorridors([]);
                 setReroutedCorridors([]);
+                setReroutePaths([]);  // BUG-5 FIX: Clear reroute paths on full recovery
               }
               return prevNodes;  // No mutation — read-only check
             });
@@ -339,6 +342,25 @@ export function useLocalState() {
             return;
           }
 
+          // BUG-5 FIX: Handle REROUTE_PATH SSE — A* computed alternate route
+          if (data.type === 'REROUTE_PATH' && data.route_coordinates?.length > 1) {
+            setReroutePaths(prev => [
+              ...prev,
+              {
+                id: data.anomaly_id || `RP-${Date.now()}`,
+                coordinates: data.route_coordinates,
+                routePath: data.route_path || '',
+                avoidedNodes: data.avoided_nodes || [],
+                reroutedCount: data.rerouted_count || 0,
+                costSaved: data.cost_saved_inr || 0,
+                distanceKm: data.total_distance_km || 0,
+                timestamp: data.timestamp,
+              },
+            ]);
+            console.log('[APEX] 🗺️ Reroute path received:', data.route_path, `${data.route_coordinates.length} waypoints`);
+            return;
+          }
+
           if (data.type !== 'AUTO_DETECTED' || !data.node_name) return;
 
           // Track auto-detection state for AI Engine Status panel
@@ -373,6 +395,8 @@ export function useLocalState() {
   }, []);
 
   // ── Inject anomaly — tries live ML Agent, falls back to mock ────
+  // FIX-3: When API succeeds, DON'T duplicate disruption effects client-side.
+  // The backend broadcasts NODE_STATUS_UPDATE via SSE, which updates nodes.
   const injectAnomaly = useCallback(async (anomaly) => {
     try {
       // ── Call the LIVE ML Agent API on Cloud Run ──
@@ -385,44 +409,55 @@ export function useLocalState() {
       if (response.ok) {
         const result = await response.json();
 
-        // If connected to Firebase, the onValue listeners will pick up
-        // changes written by the ML Agent. But we also update local state
-        // for instant feedback.
+        // Record anomaly locally for immediate feedback
         const id = result.anomaly_id || `ANM-${Date.now()}`;
         setAnomalies(prev => ({ ...prev, [id]: anomaly }));
 
-        // Apply impact to local state for immediate visual feedback
-        setNodes(prev => {
-          const updated = { ...prev };
-          Object.entries(updated).forEach(([nodeId, node]) => {
-            const dist = haversineKm(node.lat, node.lng, anomaly.lat, anomaly.lng);
-            if (dist < DISRUPTION_RADIUS_KM) {
-              updated[nodeId] = { ...node, status: 'DISRUPTED', utilization: Math.min(0.98, node.utilization + 0.3), queueLength: node.queueLength + 80 };
-            } else if (dist < CASCADE_RADIUS_KM) {
-              updated[nodeId] = { ...node, status: node.status === 'NORMAL' ? 'DELAYED' : node.status, utilization: Math.min(0.95, node.utilization + 0.15), queueLength: node.queueLength + 30 };
-            }
-          });
-          return updated;
-        });
+        // FIX-3: Do NOT run haversine-based node disruption here.
+        // The backend sends NODE_STATUS_UPDATE via SSE for each affected node.
+        // Running it here too causes double-disruption stacking.
 
+        // BUG-5 FIX: Store route coordinates from API response for immediate map rendering
+        if (result.route_coordinates?.length > 1) {
+          setReroutePaths(prev => [
+            ...prev,
+            {
+              id: result.anomaly_id || `RP-${Date.now()}`,
+              coordinates: result.route_coordinates,
+              routePath: result.route_path || '',
+              avoidedNodes: [],
+              reroutedCount: result.rerouted || 0,
+              costSaved: result.cost_saved_inr || 0,
+              distanceKm: result.total_distance_km || 0,
+              timestamp: new Date().toISOString(),
+            },
+          ]);
+        }
+
+        // Record reroute count from backend (for KPI display)
         const reroutedCount = result.rerouted || 0;
-        setRoutes(prev => {
-          const updated = { ...prev };
-          let count = 0;
-          Object.keys(updated).forEach(key => {
-            if (count >= reroutedCount) return;
-            const route = updated[key];
-            if (route.isRerouted) return;
-            const midLat = (route.originCoordinates[1] + route.destinationCoordinates[1]) / 2;
-            const midLng = (route.originCoordinates[0] + route.destinationCoordinates[0]) / 2;
-            const dist = haversineKm(midLat, midLng, anomaly.lat, anomaly.lng);  // Fix F-01: proper geographic distance
-            if (dist < REROUTE_RADIUS_KM) {
-              updated[key] = { ...route, status: 'REROUTED', isRerouted: true, riskScore: Math.min(0.95, route.riskScore + 0.5), affectedNodeId: anomaly.nodeId || anomaly.id || 'unknown' };
-              count++;
-            }
+
+        // If backend reports rerouted trucks, mark nearest routes
+        // Only if reroutedCount > 0 (backend actually rerouted)
+        if (reroutedCount > 0) {
+          setRoutes(prev => {
+            const updated = { ...prev };
+            let count = 0;
+            Object.keys(updated).forEach(key => {
+              if (count >= reroutedCount) return;
+              const route = updated[key];
+              if (route.isRerouted) return;
+              const midLat = (route.originCoordinates[1] + route.destinationCoordinates[1]) / 2;
+              const midLng = (route.originCoordinates[0] + route.destinationCoordinates[0]) / 2;
+              const dist = haversineKm(midLat, midLng, anomaly.lat, anomaly.lng);
+              if (dist < REROUTE_RADIUS_KM) {
+                updated[key] = { ...route, status: 'REROUTED', isRerouted: true, riskScore: Math.min(0.95, route.riskScore + 0.5), affectedNodeId: anomaly.nodeId || anomaly.id || 'unknown' };
+                count++;
+              }
+            });
+            return updated;
           });
-          return updated;
-        });
+        }
 
         const alertId = result.alert_id || `ALT-${Date.now()}`;
         const costSaved = result.cost_saved_inr || 0;
@@ -480,7 +515,7 @@ export function useLocalState() {
     return result;
   }, []);
 
-  // ── Reset state ─────────────────────────────────────────────────
+  // ── Reset state — FIX-4: uses unified mock data matching backend ──
   const resetState = useCallback(() => {
     setNodes({ ...mockNodes });
     setRoutes({ ...mockRoutes });
@@ -488,6 +523,10 @@ export function useLocalState() {
     setAlerts({ ...mockAlerts });
     setBlockedCorridors([]);
     setReroutedCorridors([]);
+    setReroutePaths([]);  // BUG-5 FIX: Clear reroute paths on reset
+    setAutoDetections(0);
+    setLastAutoDetect(null);
+    setGeminiAnalysis(null);
   }, []);
 
   // ── Memoize array conversions ───────────────────────────────────
@@ -506,6 +545,7 @@ export function useLocalState() {
     alerts: alertsArray,
     blockedCorridors,
     reroutedCorridors,
+    reroutePaths,  // BUG-5 FIX: A* reroute coordinate arrays for map
     injectAnomaly,
     resetState,
     firebaseConnected,
